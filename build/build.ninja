@@ -58,6 +58,15 @@ build CMakeFiles/MyWorld.dir/src/main.cpp.o: CXX_COMPILER__MyWorld_unscanned_Deb
   OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src
   TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
 
+build CMakeFiles/MyWorld.dir/src/world/world.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/world/world.cpp || cmake_object_order_depends_target_MyWorld
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/MyWorld.dir/src/world/world.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64
+  INCLUDES = -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
+  OBJECT_DIR = CMakeFiles/MyWorld.dir
+  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/world
+  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target MyWorld
@@ -66,7 +75,7 @@ build CMakeFiles/MyWorld.dir/src/main.cpp.o: CXX_COMPILER__MyWorld_unscanned_Deb
 #############################################
 # Link the executable MyWorld
 
-build MyWorld: CXX_EXECUTABLE_LINKER__MyWorld_Debug CMakeFiles/MyWorld.dir/src/main.cpp.o | /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2main.a
+build MyWorld: CXX_EXECUTABLE_LINKER__MyWorld_Debug CMakeFiles/MyWorld.dir/src/main.cpp.o CMakeFiles/MyWorld.dir/src/world/world.cpp.o | /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2main.a
   CONFIG = Debug
   FLAGS = -g -arch arm64
   LINK_FLAGS = -Wl,-search_paths_first -Wl,-headerpad_max_install_names

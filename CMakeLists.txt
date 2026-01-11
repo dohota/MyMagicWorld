@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(SDL2 CONFIG REQUIRED)
 add_executable(MyWorld
     src/main.cpp
+    src/world/world.cpp
 )
+
 
 if (APPLE)
     target_link_libraries(MyWorld

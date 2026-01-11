@@ -1,3 +1,6 @@
 # ninja log v7
 11	567	1766419173731767215	CMakeFiles/MyWorld.dir/src/main.cpp.o	ef9426a1df2ad71b
 567	670	1766419174287474053	MyWorld	85d5a32a0b1ea8fc
+4	92	1768145671857317335	CMakeFiles/MyWorld.dir/src/main.cpp.o	ef9426a1df2ad71b
+5	413	1768145671857767090	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
+413	549	1768145672265891792	MyWorld	f05a2b7cddfe7d68

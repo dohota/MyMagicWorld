@@ -4,5 +4,11 @@
   "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/main.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/main.cpp",
   "file": "/Users/karl/Documents/programming/c/FirstWorld/src/main.cpp",
   "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",
+  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/world/world.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/world/world.cpp",
+  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/world/world.cpp",
+  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/world/world.cpp.o"
 }
 ]
