@@ -1,4 +1,3 @@
-#include <SDL.h>
 #include <SDL_opengl.h> // macOS 上直接用这个
 #include <iostream>
 #include <cmath>
@@ -75,14 +74,14 @@ void World :: drawCube() {
     glEnd();
 }
 
-void World :: update()  {
+World :: World() {
     // 1. 初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr  << "SDL_Init error: "  << SDL_GetError() << "\n";
         return; //错误，退出程序
     }
     // 2. 创建 OpenGL 窗口（使用兼容模式）
-    SDL_Window* window = SDL_CreateWindow(
+    this->window = SDL_CreateWindow(
         "Rotating Cube",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
@@ -90,12 +89,14 @@ void World :: update()  {
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
     // 3. 创建 OpenGL 上下文
-    SDL_GLContext context = SDL_GL_CreateContext(window);
-    if (!context) {
+    this->context = SDL_GL_CreateContext(window);
+    if (!this->context) {
         std::cerr << "CreateContext error: " << SDL_GetError() << "\n";
         return;
     }
-
+    start();
+}
+void World :: start(){
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
 
@@ -103,9 +104,10 @@ void World :: update()  {
     SDL_GetWindowSize(window, &w, &h);
     setupProjection(w, h);
 
-    bool running = true;
+    this->running = true;
+}
+void World :: update()  {
     float angle = 0.0f;
-
     while (running) {
         // 4. 事件处理
         SDL_Event e;
@@ -129,7 +131,9 @@ void World :: update()  {
 
         // 6. 交换缓冲
         SDL_GL_SwapWindow(window);
-    }
+    }   
+}
+World::~World(){
     // 7. 清理
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
