@@ -139,5 +139,4 @@ core/
  │   ├── hotbar.py
  │   └── crosshair.py
 
-## v1.2:
-...
+# v1.0.0-v1.0.1
