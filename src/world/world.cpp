@@ -1,4 +1,3 @@
-#include <SDL_opengl.h> // macOS 上直接用这个
 #include <iostream>
 #include <cmath>
 #include "world.h"
@@ -119,7 +118,7 @@ World :: World() {
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
     // 3. 创建 OpenGL 上下文
-    this->context = SDL_GL_CreateContext(window);
+    this->context = SDL_GL_CreateContext(this->window);
     if (!this->context) {
         std::cerr << "CreateContext error: " << SDL_GetError() << "\n";
         return;
@@ -132,7 +131,7 @@ void World :: start(){
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
 
     int w, h;
-    SDL_GetWindowSize(window, &w, &h);
+    SDL_GetWindowSize(this->window, &w, &h);
     setupProjection(w, h);
 }
 void World :: update()  {
@@ -159,12 +158,12 @@ void World :: update()  {
         drawCube();
 
         // 6. 交换缓冲
-        SDL_GL_SwapWindow(window);
+        SDL_GL_SwapWindow(this->window);
     }   
 }
 World::~World(){
     // 7. 清理
-    SDL_GL_DeleteContext(context);
-    SDL_DestroyWindow(window);
+    SDL_GL_DeleteContext(this->context);
+    SDL_DestroyWindow(this->window);
     SDL_Quit();
 }

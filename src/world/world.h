@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL_opengl.h> // macOS 上直接用这个
 #include <SDL.h>
 #include <unordered_map>
 #include "../entity/entity.h" 
@@ -9,6 +10,7 @@
 
 class World  {
 public:
+    const SDL_Window* window;
     World(); //默认构造函数
     void start();
     void update();
@@ -31,7 +33,7 @@ public:
 
 private:
     bool running;
-    SDL_Window* window;
+    
     SDL_GLContext context;
     void setPerspective(float fov, float aspect, float zNear, float zFar);
     void setupProjection(int w, int h);

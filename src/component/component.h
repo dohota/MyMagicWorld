@@ -1,6 +1,6 @@
 #pragma once
 #include <cmath>
-
+#include <SDL_opengl.h> // macOS 上直接用这个
 struct Vec3 {
     float x, y, z;
 
@@ -48,8 +48,9 @@ struct Camera {
 };
 
 struct Mesh {
-    unsigned int vao;
-    unsigned int vertexCount;
+    GLuint vao = 0;
+    GLuint vbo = 0;
+    int vertexCount = 0;
 };
 
 struct Control {
