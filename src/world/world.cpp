@@ -3,9 +3,37 @@
 #include <cmath>
 #include "world.h"
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
+Entity World::createEntity() {
+    return nextEntity_++;
+}
 
-    //world.cpp：管理system，entity，component，管理chunk。用于创建窗口，开始游戏
-   
+void World::destroyEntity(Entity e) {
+    transforms_.erase(e);
+    velocities_.erase(e);
+}
+
+template<>
+void World::addComponent(Entity e, Position c) {
+    transforms_[e] = c;
+}
+
+template<>
+void World::addComponent(Entity e, Velocity c) {
+    velocities_[e] = c;
+}
+
+template<>
+Position* World::getComponent(Entity e) {
+    auto it = transforms_.find(e);
+    return it != transforms_.end() ? &it->second : nullptr;
+}
+
+template<>
+Velocity* World::getComponent(Entity e) {
+    auto it = velocities_.find(e);
+    return it != velocities_.end() ? &it->second : nullptr;
+}
+
 void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     float fH = std::tan(fov * 0.5f * M_PI / 180.0f) * zNear;
     float fW = fH * aspect;
@@ -96,6 +124,7 @@ World :: World() {
         std::cerr << "CreateContext error: " << SDL_GetError() << "\n";
         return;
     }
+    this->running = true;
     start();
 }
 void World :: start(){
@@ -105,17 +134,15 @@ void World :: start(){
     int w, h;
     SDL_GetWindowSize(window, &w, &h);
     setupProjection(w, h);
-
-    this->running = true;
 }
 void World :: update()  {
     float angle = 0.0f;
-    while (running) {
+    while (this->running) {
         // 4. 事件处理
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
-                running = false;
+                this->running = false;
             if (e.type == SDL_WINDOWEVENT &&
                 e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 setupProjection(e.window.data1, e.window.data2);
