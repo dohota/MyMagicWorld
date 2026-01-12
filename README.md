@@ -20,23 +20,10 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 构建方面暂定：cmake+ninja+vcpkg，等项目超过十万行再考虑别的
 
 底层和操作系统/硬件打交道的代码用c语言，上层用c++ ecs架构，其中chunk会特殊一点，一堆方块视为一个entity
-## 暂定架构
-src/main.cpp：仅表示程序的入口
 
-    /world：
-    world.cpp：管理system，entity，component，管理chunk。用于创建窗口，开始游戏（world）
-    chunk.c：管理chunk（一大组方块），block（单个方块）
+## v1.3.1-v1.3.2
 
-    /system：
-    input.c：输入系统
-    render.c：渲染系统 （含ui绘制）
-    system.cpp: 移动系统，战斗系统
-    camera.c：
-    
-    /game_object：
-    entity.cpp：允许增加删除组件，查找组件。用于创造实体（如玩家，掉落物等小东西，不适合创造百万个方块）
-    component.c：实体的组件(一般都是结构体)
-
+未来实现：
     /util：
         ├── math.c 有关数学类的
         ├── aabb.c
@@ -47,5 +34,3 @@ src/main.cpp：仅表示程序的入口
     /core：
     shader.xx：OpenGL着色器等配置
     # 有关窗口，输入，声音，渲染的底层库，之后这里可以放sokol文件
-
-# v1.3.1-v1.3.2

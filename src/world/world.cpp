@@ -4,6 +4,8 @@
 #include "world.h"
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
 
+    //world.cpp：管理system，entity，component，管理chunk。用于创建窗口，开始游戏
+   
 void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     float fH = std::tan(fov * 0.5f * M_PI / 180.0f) * zNear;
     float fW = fH * aspect;
