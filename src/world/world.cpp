@@ -1,26 +1,16 @@
 #include <iostream>
-#include <cmath>
+//#include "../system/move.h"
+#include "../system/render.h"
+//#include "../system/input.h"
 #include "world.h"
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
 Entity World::createEntity() {
     return nextEntity_++;
 }
-
-void World::destroyEntity(Entity e) {
-    transforms_.erase(e);
-    velocities_.erase(e);
+template<typename T>
+T* World::getComponent(Entity) {
+    return nullptr;
 }
-
-template<>
-void World::addComponent(Entity e, Position c) {
-    transforms_[e] = c;
-}
-
-template<>
-void World::addComponent(Entity e, Velocity c) {
-    velocities_[e] = c;
-}
-
 template<>
 Position* World::getComponent(Entity e) {
     auto it = transforms_.find(e);
@@ -32,7 +22,15 @@ Velocity* World::getComponent(Entity e) {
     auto it = velocities_.find(e);
     return it != velocities_.end() ? &it->second : nullptr;
 }
+void World::destroyEntity(Entity e) {
+    transforms_.erase(e);
+    velocities_.erase(e);
+}
 
+template<>
+void World::addComponent(Entity e, Position c) {
+    transforms_[e] = c;
+}
 void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     float fH = std::tan(fov * 0.5f * M_PI / 180.0f) * zNear;
     float fW = fH * aspect;
@@ -42,7 +40,6 @@ void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     glFrustum(-fW, fW, -fH, fH, zNear, zFar);
     glMatrixMode(GL_MODELVIEW);
 }
-
 void World :: setupProjection(int w, int h) {
     glViewport(0, 0, w, h);
 
@@ -54,55 +51,6 @@ void World :: setupProjection(int w, int h) {
 
     glMatrixMode(GL_MODELVIEW);
 }
-
-void World :: drawCube() {
-    glBegin(GL_QUADS);
-
-    // Front
-    glColor3f(1, 0, 0);
-    glVertex3f(-1, -1,  1);
-    glVertex3f( 1, -1,  1);
-    glVertex3f( 1,  1,  1);
-    glVertex3f(-1,  1,  1);
-
-    // Back
-    glColor3f(0, 1, 0);
-    glVertex3f(-1, -1, -1);
-    glVertex3f(-1,  1, -1);
-    glVertex3f( 1,  1, -1);
-    glVertex3f( 1, -1, -1);
-
-    // Left
-    glColor3f(0, 0, 1);
-    glVertex3f(-1, -1, -1);
-    glVertex3f(-1, -1,  1);
-    glVertex3f(-1,  1,  1);
-    glVertex3f(-1,  1, -1);
-
-    // Right
-    glColor3f(1, 1, 0);
-    glVertex3f( 1, -1, -1);
-    glVertex3f( 1,  1, -1);
-    glVertex3f( 1,  1,  1);
-    glVertex3f( 1, -1,  1);
-
-    // Top
-    glColor3f(0, 1, 1);
-    glVertex3f(-1,  1, -1);
-    glVertex3f(-1,  1,  1);
-    glVertex3f( 1,  1,  1);
-    glVertex3f( 1,  1, -1);
-
-    // Bottom
-    glColor3f(1, 0, 1);
-    glVertex3f(-1, -1, -1);
-    glVertex3f( 1, -1, -1);
-    glVertex3f( 1, -1,  1);
-    glVertex3f(-1, -1,  1);
-
-    glEnd();
-}
-
 World :: World() {
     // 1. 初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -124,46 +72,93 @@ World :: World() {
         return;
     }
     this->running = true;
-    start();
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    glEnable(GL_DEPTH_TEST);
+    glViewport(0, 0, 1280, 720);
+
+    this->start();
 }
 void World :: start(){
-    glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-
     int w, h;
     SDL_GetWindowSize(this->window, &w, &h);
     setupProjection(w, h);
+    // ===== 玩家（摄像机）=====
+    // Entity player = createEntity();
+    // addComponent<Position>(player, {{0, 2, 5}});
+    // addComponent<Velocity>(player, {{0, 0, 0}});
+    // addComponent<Camera>(player, {});
+    // ===== 平原方块 =====
+    // for (int x = -20; x <= 20; x++) {
+    //     for (int z = -20; z <= 20; z++) {
+    //         Entity block = createEntity();
+    //         addComponent<Position>(block, {{(float)x, 0.f, (float)z}});
+    //         addComponent<Mesh>(block, mesh::createCubeMesh());
+    //     }
+    // }
 }
 void World :: update()  {
-    float angle = 0.0f;
+    Uint32 lastTime = SDL_GetTicks();
     while (this->running) {
+        Uint32 current = SDL_GetTicks();
+        float dt = (current - lastTime) / 1000.f;
+        lastTime = current;
         // 4. 事件处理
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
                 this->running = false;
+            // else if (e.type == SDL_KEYDOWN) {
+            //     switch (e.key.keysym.sym) {
+            //         case SDLK_ESCAPE: running=false; break;
+            //         case SDLK_w: input->forward=true; break;
+            //         case SDLK_s: input->backward=true; break;
+            //         case SDLK_a: input->left=true; break;
+            //         case SDLK_d: input->right=true; break;
+            //         case SDLK_SPACE: input->up=true; break;
+            //         case SDLK_LSHIFT: input->down=true; break;
+            //     }
+            // }
+            // else if (e.type == SDL_KEYUP) {
+            //     switch (e.key.keysym.sym) {
+            //         case SDLK_w: input->forward=false; break;
+            //         case SDLK_s: input->backward=false; break;
+            //         case SDLK_a: input->left=false; break;
+            //         case SDLK_d: input->right=false; break;
+            //         case SDLK_SPACE: input->up=false; break;
+            //         case SDLK_LSHIFT: input->down=false; break;
+            //     }
+            // }
+            // else if (e.type == SDL_MOUSEMOTION) {
+            //     input->mouseDX = e.motion.xrel;
+            //     input->mouseDY = e.motion.yrel;
+            // }
             if (e.type == SDL_WINDOWEVENT &&
                 e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        angle += 0.03f; // 调整旋转速度
-        // 5. OpenGL 渲染
-        glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // // 5. OpenGL 渲染
+        // glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
-        glTranslatef(0.0f, 0.0f, -6.0f); //把整个世界 往 Z 轴负方向移动 6 个单位，便于观察
-        glRotatef(angle, 1.0f, 1.0f, 0.0f); //绕着 (x,y,z) 这个方向的轴旋转 angle 度
-        drawCube();
+        // glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
+        // glTranslatef(0.0f, 0.0f, -6.0f); //把整个世界 往 Z 轴负方向移动 6 个单位，便于观察
+        // glRotatef(angle, 1.0f, 1.0f, 0.0f); //绕着 (x,y,z) 这个方向的轴旋转 angle 度
+        // drawCube();
 
-        // 6. 交换缓冲
-        SDL_GL_SwapWindow(this->window);
-    }   
+        // // 6. 交换缓冲
+        // SDL_GL_SwapWindow(this->window);
+        //input_system(*this, 0.016f);     // WASD + 鼠标
+        //move_system(*this, 0.016f); // 假设固定 dt 16ms
+        render_system(*this);
+    }
 }
 World::~World(){
     // 7. 清理
     SDL_GL_DeleteContext(this->context);
-    SDL_DestroyWindow(this->window);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 }

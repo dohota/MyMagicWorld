@@ -3,8 +3,8 @@
 #include "../component/component.h"
 #include <SDL.h>
 #include <cmath>
-
-void inputSystem(World& world, float dt) {
+// 控制视角和移动
+void input_system(World& world, float dt) {
     int dx, dy;
     SDL_GetRelativeMouseState(&dx, &dy);
 
@@ -40,63 +40,3 @@ void inputSystem(World& world, float dt) {
         if (cam.pitch < -89.f) cam.pitch = -89.f;
     }
 }
-
-// void inputSystem(World& world, float dt) {
-//     for (Entity e : world.players()) {
-//         auto* t = world.getComponent<Transform>(e);
-//         auto* v = world.getComponent<Velocity>(e);
-//         auto* c = world.getComponent<Camera>(e);
-
-//         glm::vec3 front{
-//             cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch)),
-//             sin(glm::radians(c->pitch)),
-//             sin(glm::radians(c->yaw)) * cos(glm::radians(c->pitch))
-//         };
-
-//         glm::vec3 right = glm::normalize(glm::cross(front, {0,1,0}));
-
-//         float speed = 5.0f;
-
-//         if (keyDown('W')) v->value += front * speed;
-//         if (keyDown('S')) v->value -= front * speed;
-//         if (keyDown('A')) v->value -= right * speed;
-//         if (keyDown('D')) v->value += right * speed;
-//     }
-// }
-// void mouseSystem(World& world, float dx, float dy) {
-//     for (Entity e : world.players()) {
-//         auto* cam = world.getComponent<Camera>(e);
-
-//         cam->yaw   += dx * 0.1f;
-//         cam->pitch -= dy * 0.1f;
-
-//         cam->pitch = glm::clamp(cam->pitch, -89.f, 89.f);
-//     }
-// }
-
-// void inputSystem(World& world, float dt) {
-//     int dx, dy;
-//     SDL_GetRelativeMouseState(&dx, &dy);
-
-//     const Uint8* state = SDL_GetKeyboardState(nullptr);
-
-//     for (auto& [e, cam] : world.cameras_) {
-//         auto* t = world.getComponent<Position>(e);
-//         auto* v = world.getComponent<Velocity>(e);
-//         if (!t || !v) continue;
-
-//         Vec3 f = cam.front();
-//         Vec3 r = normalize(cross(f, Vec3{0,1,0}));
-
-//         float speed = 5.f;
-//         if (state[SDL_SCANCODE_W]) v->value += f * speed * dt;
-//         if (state[SDL_SCANCODE_S]) v->value += f * -speed * dt;
-//         if (state[SDL_SCANCODE_A]) v->value += r * -speed * dt;
-//         if (state[SDL_SCANCODE_D]) v->value += r * speed * dt;
-
-//         cam.yaw   += dx * 0.1f;
-//         cam.pitch -= dy * 0.1f;
-//         if (cam.pitch > 89.f) cam.pitch = 89.f;
-//         if (cam.pitch < -89.f) cam.pitch = -89.f;
-//     }
-// }

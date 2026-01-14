@@ -1,6 +1,12 @@
 #pragma once
 #include <cmath>
 #include <SDL_opengl.h> // macOS 上直接用这个
+
+// #ifndef COMPONENT_H
+// #define COMPONENT_H
+
+
+// #endif
 struct Vec3 {
     float x, y, z;
 
@@ -52,6 +58,8 @@ struct Mesh {
     GLuint vbo = 0;
     int vertexCount = 0;
 };
+
+
 
 struct Control {
     
