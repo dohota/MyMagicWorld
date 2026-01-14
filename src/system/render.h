@@ -15,9 +15,13 @@ inline void drawCube(float x, float y, float z) {
 }
 
 inline void render_system(World& world) {
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // for (auto& [e, pos] : world.transforms_) {
+    //     drawCube(pos.position.x, pos.position.y, pos.position.z);
+    // }
+    // SDL_GL_SwapWindow(world.window);
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f); // 紫色
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (auto& [e, pos] : world.transforms_) {
-        drawCube(pos.position.x, pos.position.y, pos.position.z);
-    }
     SDL_GL_SwapWindow(world.window);
+
 }

@@ -25,10 +25,11 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 先不要分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
 #### v1.3.3
 先试试渲染系统能不能成功（固定摄像机）
+#### 1.3.3 b
+编译+链接成功，但没有画面显示
 
 未来实现：
     /util：
-        ├── math.c 有关数学类的
         ├── aabb.c
         ├── raycast.c
         ├── timer.c
