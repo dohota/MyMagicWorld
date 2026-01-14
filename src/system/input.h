@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include <cmath>
 // 控制视角和移动
-void input_system(World& world, float dt) {
+inline void input_system(World& world, float dt) {
     int dx, dy;
     SDL_GetRelativeMouseState(&dx, &dy);
 

@@ -1,7 +1,7 @@
 #include <iostream>
-//#include "../system/move.h"
+#include "../system/move.h"
 #include "../system/render.h"
-//#include "../system/input.h"
+#include "../system/input.h"
 #include "world.h"
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
 Entity World::createEntity() {
@@ -72,32 +72,21 @@ World :: World() {
         return;
     }
     this->running = true;
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, 1280, 720);
-
     this->start();
 }
 void World :: start(){
-    glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-    int w, h;
-    SDL_GetWindowSize(this->window, &w, &h);
-    setupProjection(w, h);
-    // ===== 玩家（摄像机）=====
-    // Entity player = createEntity();
-    // addComponent<Position>(player, {{0, 2, 5}});
-    // addComponent<Velocity>(player, {{0, 0, 0}});
-    // addComponent<Camera>(player, {});
-    // ===== 平原方块 =====
-    // for (int x = -20; x <= 20; x++) {
-    //     for (int z = -20; z <= 20; z++) {
-    //         Entity block = createEntity();
-    //         addComponent<Position>(block, {{(float)x, 0.f, (float)z}});
-    //         addComponent<Mesh>(block, mesh::createCubeMesh());
-    //     }
-    // }
+    //===== 玩家（摄像机）=====
+    Entity player = createEntity();
+    addComponent<Position>(player, {{0, 2, 5}});
+    addComponent<Velocity>(player, {{0, 0, 0}});
+    addComponent<Camera>(player, {});
+    //===== 平原方块 =====
+    for (int x = -20; x <= 20; x++) {
+        for (int z = -20; z <= 20; z++) {
+            Entity block = createEntity();
+            addComponent<Position>(block, {{(float)x, 0.f, (float)z}});
+        }
+    }
 }
 void World :: update()  {
     Uint32 lastTime = SDL_GetTicks();
@@ -140,19 +129,8 @@ void World :: update()  {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        // // 5. OpenGL 渲染
-        // glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
-        // glTranslatef(0.0f, 0.0f, -6.0f); //把整个世界 往 Z 轴负方向移动 6 个单位，便于观察
-        // glRotatef(angle, 1.0f, 1.0f, 0.0f); //绕着 (x,y,z) 这个方向的轴旋转 angle 度
-        // drawCube();
-
-        // // 6. 交换缓冲
-        // SDL_GL_SwapWindow(this->window);
-        //input_system(*this, 0.016f);     // WASD + 鼠标
-        //move_system(*this, 0.016f); // 假设固定 dt 16ms
+        input_system(*this, 0.016f);     // WASD + 鼠标
+        move_system(*this, 0.016f); // 假设固定 dt 16ms
         render_system(*this);
     }
 }
