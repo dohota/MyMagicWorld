@@ -15,9 +15,45 @@ public:
     Entity createEntity();
     void destroyEntity(Entity e);
     template<typename T>
-    void addComponent(Entity e, T component);
+    void addComponent(Entity e, T component){
+        if constexpr (std::is_same_v<T, Position>) {
+            transforms_[e] = component;
+        }
+        else if constexpr (std::is_same_v<T, Velocity>) {
+            velocities_[e] = component;
+        }
+        else {
+
+        }
+    }
     template<typename T>
-    T* getComponent(Entity e);
+    T* getComponent(Entity e) {
+        if constexpr (std::is_same_v<T, Position>) {
+            auto it = transforms_.find(e);
+            return it != transforms_.end() ? &it->second : nullptr;
+        }
+        else if constexpr (std::is_same_v<T, Velocity>) {
+            auto it = velocities_.find(e);
+            return it != velocities_.end() ? &it->second : nullptr;
+        }
+        else {
+            return nullptr;
+        }
+    }
+    // template<typename T>
+    // T* getComponents(Entity e) {
+    //     if constexpr (std::is_same_v<T, Position>) {
+    //         auto it = transforms_.find(e);
+    //         return it != transforms_.end() ? &it->second : nullptr;
+    //     }
+    //     else if constexpr (std::is_same_v<T, Velocity>) {
+    //         auto it = velocities_.find(e);
+    //         return it != velocities_.end() ? &it->second : nullptr;
+    //     }
+    //     else {
+    //         return nullptr;
+    //     }
+    // }  查找一个实体是否拥有某几个组件
 
     template<typename T>
     using ComponentMap = std::unordered_map<Entity, T>;

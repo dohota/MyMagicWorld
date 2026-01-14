@@ -24,15 +24,4 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 #### v1.3.2
 先不要分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
 #### v 1.3.5
-
-
-未来实现：
-    /util：
-        ├── aabb.c
-        ├── raycast.c
-        ├── timer.c
-        ├── config.c 各种全局配置
-
-    /core：
-    shader.xx：OpenGL着色器等配置
-    # 有关窗口，输入，声音，渲染的底层库，之后这里可以放sokol文件
+检查实体，检查组件的机制还不够完善

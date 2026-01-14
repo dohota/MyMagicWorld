@@ -20,3 +20,7 @@ inline Vec3 normalize(const Vec3& v) {
     float len = sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
     return {v.x/len, v.y/len, v.z/len};
 }
+
+inline void raycast(){
+
+}

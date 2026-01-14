@@ -7,30 +7,11 @@
 Entity World::createEntity() {
     return nextEntity_++;
 }
-template<typename T>
-T* World::getComponent(Entity) {
-    return nullptr;
-}
-template<>
-Position* World::getComponent(Entity e) {
-    auto it = transforms_.find(e);
-    return it != transforms_.end() ? &it->second : nullptr;
-}
-
-template<>
-Velocity* World::getComponent(Entity e) {
-    auto it = velocities_.find(e);
-    return it != velocities_.end() ? &it->second : nullptr;
-}
 void World::destroyEntity(Entity e) {
     transforms_.erase(e);
     velocities_.erase(e);
 }
 
-template<>
-void World::addComponent(Entity e, Position c) {
-    transforms_[e] = c;
-}
 void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     float fH = std::tan(fov * 0.5f * M_PI / 180.0f) * zNear;
     float fW = fH * aspect;
@@ -129,8 +110,8 @@ void World :: update()  {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        input_system(*this, 0.016f);     // WASD + 鼠标
-        move_system(*this, 0.016f); // 假设固定 dt 16ms
+        input_system(*this, dt);     // WASD + 鼠标
+        move_system(*this, dt); // 暂时不固定 dt 为16ms
         render_system(*this);
     }
 }

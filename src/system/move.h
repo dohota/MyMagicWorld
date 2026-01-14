@@ -1,6 +1,7 @@
 #pragma once
 #include "../world/world.h"
 #include "../component/component.h"
+#include <iostream>
 // 根据速度，和位置 决定接下来的位置
 inline void move_system(World& world, float dt) {
     for (auto& [e, vel] : world.velocities_) {
@@ -9,6 +10,8 @@ inline void move_system(World& world, float dt) {
 
         pos->position += vel.value * dt;
         vel.value = {0,0,0}; // 重置速度
+        std::cout << pos->position.x <<"/"<<pos->position.y<<"/"<<pos->position.z;
+
     }
 }
 

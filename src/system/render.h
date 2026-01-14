@@ -115,7 +115,7 @@ inline void render_system(World& world) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
-    glTranslatef(0, 0, -15); //把整个世界 往 Z 轴负方向移动 z 个单位，便于观察
+    //glTranslatef(0, 0, -15); //把整个世界 往 Z 轴负方向移动 z 个单位，便于观察
 
     // for(float i= -1; i<=4 ;i+=0.3){
     //     for(float j=-1;j <=4;j+=0.2){
