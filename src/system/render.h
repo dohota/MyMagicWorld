@@ -1,7 +1,7 @@
 #pragma once
 #include "../world/world.h"
 //SDL2 + OpenGL 旧式（Immediate Mode）
-void drawCube(float x, float y, float z) {
+inline void drawCube(float x, float y, float z) {
     float s = 1.0f;
     glBegin(GL_QUADS);
 
@@ -14,7 +14,7 @@ void drawCube(float x, float y, float z) {
     glEnd();
 }
 
-void render_system(World& world) {
+inline void render_system(World& world) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for (auto& [e, pos] : world.transforms_) {
         drawCube(pos.position.x, pos.position.y, pos.position.z);

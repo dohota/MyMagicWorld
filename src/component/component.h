@@ -1,5 +1,5 @@
 #pragma once
-#include <cmath>
+#include "../utils/math.h"
 #include <SDL_opengl.h> // macOS 上直接用这个
 
 // #ifndef COMPONENT_H
@@ -7,28 +7,6 @@
 
 
 // #endif
-struct Vec3 {
-    float x, y, z;
-
-    Vec3 operator+(const Vec3& o) const { return {x+o.x, y+o.y, z+o.z}; }
-    Vec3 operator-(const Vec3& o) const { return {x-o.x, y-o.y, z-o.z}; }
-    Vec3 operator*(float s) const { return {x*s, y*s, z*s}; }
-    Vec3& operator+=(const Vec3& o) { x+=o.x; y+=o.y; z+=o.z; return *this; }
-
-    Vec3& operator-=(const Vec3& o) { x-=o.x; y-=o.y; z-=o.z; return *this; }
-};
-
-Vec3 cross(const Vec3& a, const Vec3& b) {
-    return { a.y*b.z - a.z*b.y,
-             a.z*b.x - a.x*b.z,
-             a.x*b.y - a.y*b.x };
-}
-
-Vec3 normalize(const Vec3& v) {
-    float len = sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-    return {v.x/len, v.y/len, v.z/len};
-}
-
 struct Position {
     Vec3 position;
 };
