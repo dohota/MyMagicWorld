@@ -40,7 +40,7 @@ World :: World() {
     }
     // 2. 创建 OpenGL 窗口（使用兼容模式）
     this->window = SDL_CreateWindow(
-        "Rotating Cube",
+        "my magic world",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         800, 600,
@@ -56,20 +56,26 @@ World :: World() {
     this->start();
 }
 void World :: start(){
+    SDL_SetRelativeMouseMode(SDL_TRUE);//防止鼠标没反应
+    SDL_ShowCursor(SDL_DISABLE);
     //===== 玩家（摄像机）=====
-    Entity player = createEntity();
+    this->player = createEntity();
     addComponent<Position>(player, {{0, 2, 5}});
     addComponent<Velocity>(player, {{0, 0, 0}});
     addComponent<Camera>(player, {});
-    //===== 平原方块 =====
-    for (int x = -20; x <= 20; x++) {
-        for (int z = -20; z <= 20; z++) {
-            Entity block = createEntity();
-            addComponent<Position>(block, {{(float)x, 0.f, (float)z}});
-        }
-    }
+    
 }
 void World :: update()  {
+    //===== 平原方块 =====
+    for (float x = -5; x <= 8; x+=0.2) {
+        for (float y = -1; y <= 3; y+=0.2){
+            for (float z = -5; z <= 4; z+=0.3) {
+                Entity block = createEntity();
+                addComponent<Position>(block, {{x, y, z}});
+            }
+        }
+    }
+    SDL_PumpEvents();
     Uint32 lastTime = SDL_GetTicks();
     while (this->running) {
         Uint32 current = SDL_GetTicks();
@@ -80,31 +86,6 @@ void World :: update()  {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
                 this->running = false;
-            // else if (e.type == SDL_KEYDOWN) {
-            //     switch (e.key.keysym.sym) {
-            //         case SDLK_ESCAPE: running=false; break;
-            //         case SDLK_w: input->forward=true; break;
-            //         case SDLK_s: input->backward=true; break;
-            //         case SDLK_a: input->left=true; break;
-            //         case SDLK_d: input->right=true; break;
-            //         case SDLK_SPACE: input->up=true; break;
-            //         case SDLK_LSHIFT: input->down=true; break;
-            //     }
-            // }
-            // else if (e.type == SDL_KEYUP) {
-            //     switch (e.key.keysym.sym) {
-            //         case SDLK_w: input->forward=false; break;
-            //         case SDLK_s: input->backward=false; break;
-            //         case SDLK_a: input->left=false; break;
-            //         case SDLK_d: input->right=false; break;
-            //         case SDLK_SPACE: input->up=false; break;
-            //         case SDLK_LSHIFT: input->down=false; break;
-            //     }
-            // }
-            // else if (e.type == SDL_MOUSEMOTION) {
-            //     input->mouseDX = e.motion.xrel;
-            //     input->mouseDY = e.motion.yrel;
-            // }
             if (e.type == SDL_WINDOWEVENT &&
                 e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 setupProjection(e.window.data1, e.window.data2);

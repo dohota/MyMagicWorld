@@ -40,20 +40,8 @@ public:
             return nullptr;
         }
     }
-    // template<typename T>
-    // T* getComponents(Entity e) {
-    //     if constexpr (std::is_same_v<T, Position>) {
-    //         auto it = transforms_.find(e);
-    //         return it != transforms_.end() ? &it->second : nullptr;
-    //     }
-    //     else if constexpr (std::is_same_v<T, Velocity>) {
-    //         auto it = velocities_.find(e);
-    //         return it != velocities_.end() ? &it->second : nullptr;
-    //     }
-    //     else {
-    //         return nullptr;
-    //     }
-    // }  查找一个实体是否拥有某几个组件
+    Entity player;
+    Entity block;
 
     template<typename T>
     using ComponentMap = std::unordered_map<Entity, T>;

@@ -57,7 +57,7 @@ inline void drawCube(float x, float y, float z, float s = 0.2f) {
     glVertex3f(x,   y, z+s);
     // --- 再绘制边框 ---
     glColor3f(0.0f, 0.0f, 0.0f); // 黑色边框
-    glLineWidth(5.0f);           // 边框线宽
+    glLineWidth(20);           // 边框线宽
     glBegin(GL_LINES);
 
     // 8个顶点
@@ -115,15 +115,27 @@ inline void render_system(World& world) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
-    //glTranslatef(0, 0, -15); //把整个世界 往 Z 轴负方向移动 z 个单位，便于观察
+    glTranslatef(0, 0, -15);//把整个世界移动 便于观察
 
-    // for(float i= -1; i<=4 ;i+=0.3){
-    //     for(float j=-1;j <=4;j+=0.2){
-    //         for(float k =1 ;k<=10;k+=0.4){
-    //             drawCube(i,j,k);
-    //         }
-    //     }
-    // }
+    //1️⃣ 找摄像机
+    Position* camPos = nullptr;
+    Camera* cam = nullptr;
+    for (auto& [e, c] : world.cameras_) {
+        cam = &c;
+        camPos = world.getComponent<Position>(e);
+        break;
+    }
+    if (cam && camPos) {
+        // 2️⃣ 反向移动世界 = 摄像机
+        glRotatef(-cam->pitch, 1, 0, 0);
+        glRotatef(-cam->yaw,   0, 1, 0);
+        glTranslatef( //把整个世界移动 便于观察
+            -camPos->position.x,
+            -camPos->position.y,
+            -camPos->position.z
+        );
+    }
+    // 3.渲染一堆方块
     for (auto& [e, pos] : world.transforms_) {
         drawCube(pos.position.x, pos.position.y, pos.position.z);
     }

@@ -24,4 +24,4 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 #### v1.3.2
 先不要分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
 #### v 1.3.5
-检查实体，检查组件的机制还不够完善
+移动摄像机输入系统还是不行

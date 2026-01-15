@@ -3,8 +3,10 @@
 #include "../component/component.h"
 #include <SDL.h>
 #include <cmath>
-// 控制视角和移动
+#include <cstdio>
+
 inline void input_system(World& world, float dt) {
+    SDL_PumpEvents();//虽然调用了 SDL_PollEvent，但在某些情况下（特别是 macOS）必须保证这一句在前面
     int dx, dy;
     SDL_GetRelativeMouseState(&dx, &dy);
 
@@ -28,15 +30,15 @@ inline void input_system(World& world, float dt) {
 
         float speed = 5.f;
 
-        if (state[SDL_SCANCODE_W]) vel->value += front * speed * dt;
-        if (state[SDL_SCANCODE_S]) vel->value -= front * speed * dt;
-        if (state[SDL_SCANCODE_A]) vel->value -= right * speed * dt;
-        if (state[SDL_SCANCODE_D]) vel->value += right * speed * dt;
-
+        if (state[SDL_SCANCODE_W]) vel->value += front * speed;
+        if (state[SDL_SCANCODE_S]) vel->value -= front * speed;
+        if (state[SDL_SCANCODE_A]) vel->value -= right * speed;
+        if (state[SDL_SCANCODE_D]) vel->value += right * speed;
         // 鼠标控制摄像机角度
         cam.yaw   += dx * 0.1f;
         cam.pitch -= dy * 0.1f;
         if (cam.pitch > 89.f) cam.pitch = 89.f;
         if (cam.pitch < -89.f) cam.pitch = -89.f;
+        printf("%d",int(dt));
     }
 }
