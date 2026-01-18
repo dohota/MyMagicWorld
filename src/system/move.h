@@ -9,8 +9,6 @@ inline void move_system(World& world, float dt) {
 
         pos->position += vel.value * dt;
         vel.value = {0,0,0}; // 重置速度
-        //std::cout << pos->position.x <<"/"<<pos->position.y<<"/"<<pos->position.z;
-
     }
 }
 

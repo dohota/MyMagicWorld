@@ -17,50 +17,60 @@
 // 视图矩阵 = 摄像机站在哪看地图
 
 // 投影矩阵 = 摄像机镜头把 3D 映射成 2D
-inline void drawCube(float x, float y, float z, float s = 0.2f) {
+inline void drawCube(float x, float y, float z, float s = 1.5f) {
+    // --- 绘制面片 ---
+    glEnable(GL_POLYGON_OFFSET_FILL);      // 开启深度偏移
+    glPolygonOffset(1.0f, 1.0f);          // 防止线条 z-fighting
     glBegin(GL_QUADS);
+
+    // 所有面颜色统一为绿色
+    glColor3f(0.3f, 0.8f, 0.3f);
+
     // 前面 (z+s)
-    glColor3f(0.3f, 0.8f, 0.3f); // 绿色
     glVertex3f(x,   y,   z+s);
     glVertex3f(x+s, y,   z+s);
     glVertex3f(x+s, y+s, z+s);
     glVertex3f(x,   y+s, z+s);
+
     // 后面 (z)
-    glColor3f(0.3f, 0.5f, 0.3f); // 深绿色
     glVertex3f(x,   y,   z);
     glVertex3f(x+s, y,   z);
     glVertex3f(x+s, y+s, z);
     glVertex3f(x,   y+s, z);
+
     // 左面 (x)
-    glColor3f(0.25f, 0.7f, 0.25f);
     glVertex3f(x, y,   z);
     glVertex3f(x, y,   z+s);
     glVertex3f(x, y+s, z+s);
     glVertex3f(x, y+s, z);
+
     // 右面 (x+s)
-    glColor3f(0.25f, 0.6f, 0.25f);
     glVertex3f(x+s, y,   z);
     glVertex3f(x+s, y,   z+s);
     glVertex3f(x+s, y+s, z+s);
     glVertex3f(x+s, y+s, z);
+
     // 上面 (y+s)
-    glColor3f(0.4f, 0.9f, 0.4f);
     glVertex3f(x,   y+s, z);
     glVertex3f(x+s, y+s, z);
     glVertex3f(x+s, y+s, z+s);
     glVertex3f(x,   y+s, z+s);
+
     // 下面 (y)
-    glColor3f(0.2f, 0.5f, 0.2f);
     glVertex3f(x,   y, z);
     glVertex3f(x+s, y, z);
     glVertex3f(x+s, y, z+s);
     glVertex3f(x,   y, z+s);
-    // --- 再绘制边框 ---
+
+    glEnd(); // cannot delete this
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    // --- 绘制边框 ---
     glColor3f(0.0f, 0.0f, 0.0f); // 黑色边框
-    glLineWidth(20);           // 边框线宽
+    glLineWidth(1.0f);
     glBegin(GL_LINES);
 
-    // 8个顶点
+    // 八个顶点
     float x0 = x,   y0 = y,   z0 = z;
     float x1 = x+s, y1 = y+s, z1 = z+s;
 
@@ -81,6 +91,7 @@ inline void drawCube(float x, float y, float z, float s = 0.2f) {
     glVertex3f(x1, y0, z0); glVertex3f(x1, y0, z1);
     glVertex3f(x1, y1, z0); glVertex3f(x1, y1, z1);
     glVertex3f(x0, y1, z0); glVertex3f(x0, y1, z1);
+
     glEnd();
 }
 
@@ -107,15 +118,15 @@ inline void render_system(World& world) {
     glViewport(0, 0, w, h);
 
     glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//颜色缓冲区（Framebuffer）清空
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(70.0, (float)w / h, 0.1, 1000.0);
+    gluPerspective(70.0, (float)w / h, 0.1, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
-    glTranslatef(0, 0, -15);//把整个世界移动 便于观察
+    //glTranslatef(0, 0, -15);//把整个世界移动 便于观察
 
     //1️⃣ 找摄像机
     Position* camPos = nullptr;
@@ -136,11 +147,11 @@ inline void render_system(World& world) {
         );
     }
     // 3.渲染一堆方块
+    int a = 0;
     for (auto& [e, pos] : world.transforms_) {
-        if(pos.position.z!= 5){ //玩家的位置不能当作方块渲染
-            drawCube(pos.position.x, pos.position.y, pos.position.z);
-        }
-        
+        //之后实现：玩家的位置不能当作方块渲染
+        if(a!=0)drawCube(pos.position.x, pos.position.y, pos.position.z);
+        a++;
     }
     SDL_GL_SwapWindow(world.window);
 }

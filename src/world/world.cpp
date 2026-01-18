@@ -67,9 +67,9 @@ void World :: start(){
 }
 void World :: update()  {
     //===== 平原方块 =====
-    for (float x = -5; x <= 8; x+=0.2) {
-        for (float y = -1; y <= 3; y+=0.2){
-            for (float z = -5; z <= 4; z+=0.3) {
+    for (float x = -20; x <= 10; x+=1.5) {
+        for (float y = -10; y <= 3; y+=1.5){
+            for (float z = -5; z <= 14; z+=1.5) {
                 Entity block = createEntity();
                 addComponent<Position>(block, {{x, y, z}});
             }
