@@ -137,7 +137,10 @@ inline void render_system(World& world) {
     }
     // 3.渲染一堆方块
     for (auto& [e, pos] : world.transforms_) {
-        drawCube(pos.position.x, pos.position.y, pos.position.z);
+        if(pos.position.z!= 5){ //玩家的位置不能当作方块渲染
+            drawCube(pos.position.x, pos.position.y, pos.position.z);
+        }
+        
     }
     SDL_GL_SwapWindow(world.window);
 }

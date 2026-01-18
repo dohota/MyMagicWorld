@@ -18,11 +18,11 @@ public:
     void addComponent(Entity e, T component){
         if constexpr (std::is_same_v<T, Position>) {
             transforms_[e] = component;
-        }
-        else if constexpr (std::is_same_v<T, Velocity>) {
+        }else if constexpr (std::is_same_v<T, Velocity>) {
             velocities_[e] = component;
-        }
-        else {
+        }else if constexpr (std::is_same_v<T, Camera>) {
+            cameras_[e] = component;
+        }else {
 
         }
     }
@@ -31,12 +31,13 @@ public:
         if constexpr (std::is_same_v<T, Position>) {
             auto it = transforms_.find(e);
             return it != transforms_.end() ? &it->second : nullptr;
-        }
-        else if constexpr (std::is_same_v<T, Velocity>) {
+        }else if constexpr (std::is_same_v<T, Velocity>) {
             auto it = velocities_.find(e);
             return it != velocities_.end() ? &it->second : nullptr;
-        }
-        else {
+        }else if constexpr (std::is_same_v<T, Camera>) {
+            auto it = cameras_.find(e);
+            return it != cameras_.end() ? &it->second : nullptr;
+        }else {
             return nullptr;
         }
     }

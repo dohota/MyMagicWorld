@@ -21,7 +21,10 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 
 底层和操作系统/硬件打交道的代码用c语言，上层用c++ ecs架构，其中chunk会特殊一点，一堆方块视为一个entity
 
-#### v1.3.2
-先不要分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
-#### v 1.3.5
-移动摄像机输入系统还是不行
+#### v 1.4.0
+第一个正式版本！
+可以wasd移动摄像机，移动鼠标来实现视角的移动————————但是有bug，更像是整个世界的移动
+————渲染方面 又绿又黑的，可能是opengl没弄好
+
+暂时不分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
+各个system以头文件，内联函数形式提供

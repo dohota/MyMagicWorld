@@ -1,14 +1,7 @@
 # ninja log v7
 4	237	1768475848223252739	CMakeFiles/MyWorld.dir/src/main.cpp.o	ef9426a1df2ad71b
-411	442	1768483888495648557	MyWorld	f05a2b7cddfe7d68
-4	411	1768483888088354658	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
-5	411	1768484035305038921	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
-411	441	1768484035711305194	MyWorld	f05a2b7cddfe7d68
-4	412	1768484049170579318	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
-413	443	1768484049579044801	MyWorld	f05a2b7cddfe7d68
-4	408	1768484198404030660	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
-409	438	1768484198808155889	MyWorld	f05a2b7cddfe7d68
-4	418	1768484210904526230	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
-418	448	1768484211318325550	MyWorld	f05a2b7cddfe7d68
-4	412	1768484240938406526	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
 412	442	1768484241346568174	MyWorld	f05a2b7cddfe7d68
+4	412	1768484240938406526	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
+8	253	1768733589106888792	CMakeFiles/MyWorld.dir/src/main.cpp.o	ef9426a1df2ad71b
+9	443	1768733589107497385	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
+443	488	1768733589542380181	MyWorld	f05a2b7cddfe7d68
