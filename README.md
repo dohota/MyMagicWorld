@@ -28,3 +28,8 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 
 暂时不分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
 各个system以头文件，内联函数形式提供
+#### v 1.4.1
+修复了渲染的问题————边框渲染代码不太好
+#### v 1.4.2
+暂时比较难 修复摄像机的问题。涉及到很多数学知识，接下来尽量就让人物在地面上行走吧
+#### v 1.4.3

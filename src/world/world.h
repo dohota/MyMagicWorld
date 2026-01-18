@@ -57,7 +57,6 @@ private:
     SDL_GLContext context;
     void setPerspective(float fov, float aspect, float zNear, float zFar);
     void setupProjection(int w, int h);
-    // void drawCube();
     Entity nextEntity_ = 1;
 
 };

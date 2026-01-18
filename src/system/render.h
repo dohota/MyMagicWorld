@@ -136,22 +136,40 @@ inline void render_system(World& world) {
         camPos = world.getComponent<Position>(e);
         break;
     }
+    // 用 yaw / pitch 计算方向
+    float yawRad   = cam->yaw   * M_PI / 180.f;
+    float pitchRad = cam->pitch * M_PI / 180.f;
+
+    Vec3 front{
+        cosf(pitchRad) * sinf(yawRad),
+        sinf(pitchRad),
+        -cosf(pitchRad) * cosf(yawRad)
+    };
+    front = normalize(front);
+
+    Vec3 right = normalize(cross(front, Vec3{0,1,0}));
+    Vec3 up    = cross(right, front);
+
+    Vec3 target = camPos->position + front;
+
+// 🔥 真正的摄像机
+// gluLookAt(
+//     camPos->position.x, camPos->position.y, camPos->position.z,
+//     target.x,           target.y,           target.z,
+//     up.x,               up.y,               up.z
+// );
     if (cam && camPos) {
-        // 2️⃣ 反向移动世界 = 摄像机
-        glRotatef(-cam->pitch, 1, 0, 0);
-        glRotatef(-cam->yaw,   0, 1, 0);
-        glTranslatef( //把整个世界移动 便于观察
-            -camPos->position.x,
-            -camPos->position.y,
-            -camPos->position.z
-        );
+        glTranslatef(-camPos->position.x, -camPos->position.y, -camPos->position.z);
+        glRotatef(-cam->pitch, 1, 0, 0); // 绕局部 X
+        glRotatef(-cam->yaw,   0, 1, 0); // 绕世界 Y
+        
     }
-    // 3.渲染一堆方块
     int a = 0;
     for (auto& [e, pos] : world.transforms_) {
         //之后实现：玩家的位置不能当作方块渲染
-        if(a!=0)drawCube(pos.position.x, pos.position.y, pos.position.z);
-        a++;
+        //if(a!=0)
+        drawCube(pos.position.x, pos.position.y, pos.position.z);
+        //a++;
     }
     SDL_GL_SwapWindow(world.window);
 }

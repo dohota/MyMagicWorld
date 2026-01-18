@@ -63,7 +63,7 @@ void World :: start(){
     addComponent<Position>(player, {{0, 2, 5}});
     addComponent<Velocity>(player, {{0, 0, 0}});
     addComponent<Camera>(player, {});
-    
+
 }
 void World :: update()  {
     //===== 平原方块 =====
@@ -75,7 +75,7 @@ void World :: update()  {
             }
         }
     }
-    SDL_PumpEvents();
+    //SDL_PumpEvents();
     Uint32 lastTime = SDL_GetTicks();
     while (this->running) {
         Uint32 current = SDL_GetTicks();
