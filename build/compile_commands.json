@@ -10,5 +10,29 @@
   "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/world/world.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/world/world.cpp",
   "file": "/Users/karl/Documents/programming/c/FirstWorld/src/world/world.cpp",
   "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/world/world.cpp.o"
+},
+{
+  "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",
+  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/system/input.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/system/input.cpp",
+  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/system/input.cpp",
+  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/system/input.cpp.o"
+},
+{
+  "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",
+  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/system/manager.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/system/manager.cpp",
+  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/system/manager.cpp",
+  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/system/manager.cpp.o"
+},
+{
+  "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",
+  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/system/move.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/system/move.cpp",
+  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/system/move.cpp",
+  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/system/move.cpp.o"
+},
+{
+  "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",
+  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/system/render.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/system/render.cpp",
+  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/system/render.cpp",
+  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/system/render.cpp.o"
 }
 ]

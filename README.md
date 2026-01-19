@@ -33,3 +33,12 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 #### v 1.4.2
 暂时比较难 修复摄像机的问题。涉及到很多数学知识，接下来尽量就让人物在地面上行走吧
 #### v 1.4.3
+慢慢解耦合：
+system尽量都写成类
+并且设置system manager
+
+#### 。
+创造销毁实体，增加删除实体组件：entity manager
+管理组件的数据结构：component manager
+管理不同world：world manager，这个暂时不需要
+尽量让人物在地面上走，仿照初代mc飞行模式和生存模式，这样摄像机就会好弄一点

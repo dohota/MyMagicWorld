@@ -8,6 +8,10 @@ find_package(SDL2 CONFIG REQUIRED)
 add_executable(MyWorld
     src/main.cpp
     src/world/world.cpp
+    src/system/input.cpp
+    src/system/manager.cpp
+    src/system/move.cpp
+    src/system/render.cpp
 )
 
 

@@ -1,11 +1,17 @@
-#pragma once
-#include "../world/world.h"
+#include "../system/system.h"
 #include "../component/component.h"
 #include <SDL.h>
 #include <cmath>
 
-inline void input_system(World& world, float dt) {
-    //SDL_PumpEvents();//虽然调用了 SDL_PollEvent，但在某些情况下（特别是 macOS）必须保证这一句在前面
+InputSystem :: InputSystem() {
+    this->prior = 1;
+    this->start();
+}
+void InputSystem :: start(){
+    
+}
+void InputSystem :: update(World& world, float dt)  {
+    SDL_PumpEvents();//虽然调用了 SDL_PollEvent，但在某些情况下（特别是 macOS）必须保证这一句在前面
     int dx, dy;
     SDL_GetRelativeMouseState(&dx, &dy);
 
@@ -46,4 +52,7 @@ inline void input_system(World& world, float dt) {
         cam.yaw = fmodf(cam.yaw, 360.0f);
         if (cam.yaw < 0) cam.yaw += 360.0f;
     }
+}
+InputSystem::~InputSystem(){
+    
 }

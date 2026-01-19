@@ -1,7 +1,5 @@
 #include <iostream>
-#include "../system/move.h"
-#include "../system/render.h"
-#include "../system/input.h"
+#include "../system/system.h"
 #include "world.h"
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
 Entity World::createEntity() {
@@ -75,6 +73,7 @@ void World :: update()  {
             }
         }
     }
+    SystemManager s;
     //SDL_PumpEvents();
     Uint32 lastTime = SDL_GetTicks();
     while (this->running) {
@@ -91,9 +90,10 @@ void World :: update()  {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        input_system(*this, dt);     // WASD + 鼠标
-        move_system(*this, dt); // 暂时不固定 dt 为16ms
-        render_system(*this);
+        s.update(*this, dt);
+        // input_system(*this, dt);     // WASD + 鼠标
+        // move_system(*this, dt); // 暂时不固定 dt 为16ms
+        // render_system(*this);
     }
 }
 World::~World(){

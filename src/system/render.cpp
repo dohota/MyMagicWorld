@@ -1,5 +1,4 @@
-#pragma once
-#include "../world/world.h"
+#include "../system/system.h"
 //SDL2 + OpenGL 旧式（Immediate Mode）
 
 // OpenGL 本身是一个渲染管线，它不会自己存储场景里物体的位置或逻辑关系，它只知道你给它 顶点坐标 和 变换矩阵。
@@ -17,7 +16,7 @@
 // 视图矩阵 = 摄像机站在哪看地图
 
 // 投影矩阵 = 摄像机镜头把 3D 映射成 2D
-inline void drawCube(float x, float y, float z, float s = 1.5f) {
+void RenderSystem :: drawCube(float x, float y, float z, float s) {
     // --- 绘制面片 ---
     glEnable(GL_POLYGON_OFFSET_FILL);      // 开启深度偏移
     glPolygonOffset(1.0f, 1.0f);          // 防止线条 z-fighting
@@ -95,8 +94,7 @@ inline void drawCube(float x, float y, float z, float s = 1.5f) {
     glEnd();
 }
 
-
-inline void gluPerspective(float fov, float aspect, float zNear, float zFar) {
+void RenderSystem :: gluPerspective(float fov, float aspect, float zNear, float zFar) {
     float f = 1.0f / tanf(fov * 0.5f * 3.1415926f / 180.0f);
 
     float m[16] = {
@@ -109,7 +107,14 @@ inline void gluPerspective(float fov, float aspect, float zNear, float zFar) {
     glMultMatrixf(m);
 }
 
-inline void render_system(World& world) {
+RenderSystem :: RenderSystem() {
+    this->prior = 3;
+    this->start();
+}
+void RenderSystem :: start(){
+    
+}
+void RenderSystem :: update(World& world)  {
     glEnable(GL_DEPTH_TEST);
 
     int w, h;
@@ -168,8 +173,11 @@ inline void render_system(World& world) {
     for (auto& [e, pos] : world.transforms_) {
         //之后实现：玩家的位置不能当作方块渲染
         //if(a!=0)
-        drawCube(pos.position.x, pos.position.y, pos.position.z);
+        drawCube(pos.position.x, pos.position.y, pos.position.z, 1.5f);
         //a++;
     }
     SDL_GL_SwapWindow(world.window);
+}
+RenderSystem::~RenderSystem(){
+    
 }
