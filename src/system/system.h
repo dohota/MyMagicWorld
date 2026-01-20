@@ -27,7 +27,7 @@ public:
     void update(EntityManager& em, SDL_Window* window);
     ~RenderSystem();
 private:
-    void drawCube(float x, float y, float z, float s = 1.5f);
+    void drawCube(float x, float y, float z, float s);
     void gluPerspective(float fov, float aspect, float zNear, float zFar);
 };
 

@@ -1,5 +1,6 @@
 #include "../system/system.h"
 #include "../component/component.h"
+//#include <iostream>
 // 根据速度，和位置 决定接下来的位置
 MovementSystem :: MovementSystem() {
     this->prior = 2;
@@ -15,7 +16,7 @@ void MovementSystem :: update(EntityManager& em, float dt)  {
         if (!pos) continue;
         pos->position += vel->value * dt;
         vel->value = {0,0,0}; // 重置速度
-        
+        //std::cout<< pos->position.x << "-";
     }
 }
 MovementSystem::~MovementSystem(){

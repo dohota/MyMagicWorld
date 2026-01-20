@@ -2,7 +2,7 @@
 #include "../component/component.h"
 #include <SDL.h>
 #include <cmath>
-
+// #include <iostream>
 InputSystem :: InputSystem() {
     this->prior = 1;
     this->start();
@@ -22,6 +22,7 @@ void InputSystem :: update(EntityManager& em, float dt)  {
         auto* vel = em.get<Velocity>(e);
         if (!pos || !vel) continue;
         auto* cam = em.get<Camera>(e);
+        //std:: cout << cam << "--";
         // 计算摄像机前向和右向
         float yawRad = cam->yaw * M_PI/180.0f;
         float pitchRad = cam->pitch * M_PI/180.0f;

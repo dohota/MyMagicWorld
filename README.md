@@ -39,8 +39,30 @@ system尽量都写成类
 #### v 1.4.4
 创造销毁实体，增加删除实体组件：entity manager
 但是出了点问题，所以接下来我要引入类似一个component manager（管理组件的数据结构）
-
-
 #### v 1.4.5
+第二个正式版本！
+entity manager已经有manage component的功能了，接下来就只要ComponentPool来管理组件的数据结构了
+ComponentPool 天然适合 SIMD / 性能优化
+
+
+
+🔥 继续：
+
+view<T...>() 选最小 pool（O(min)）
+
+SoA / SIMD MoveSystem
+
+🧠 进阶：
+
+去掉 unordered_map → dense type id
+
+archetype / chunk layout
+
+🎮 工程化：
+
+scheduler
+
+system dependency graph
+
 管理不同world：world manager，这个暂时不需要
 尽量让人物在地面上走，仿照初代mc飞行模式和生存模式，这样摄像机就会好弄一点

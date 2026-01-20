@@ -4,11 +4,11 @@ Entity EntityManager::create() {
     return nextEntity++;
 }
 
-void EntityManager::destroy(Entity e) {
-    for (auto& [_, pool] : components) {
-        pool.erase(e);
-    }
-}
+// void EntityManager::destroy(Entity e) {
+//     for (auto& [_, pool] : pools) {
+//         pool->remove(e); 
+//     }
+// }
 
 void EntityManager::build(const std::string& s) {
     if (s == "player"){
@@ -24,6 +24,7 @@ void EntityManager::build(const std::string& s) {
                 for (float z = -5; z <= 14; z+=1.5) {
                     Entity block = this->create();
                     this->add<Position>(block, {{x, y, z}});
+                    //printf("%f-",x+y+z);
                 }
             }
         }

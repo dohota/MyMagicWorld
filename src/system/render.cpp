@@ -2,6 +2,7 @@
 #include "../component/component.h"
 #include "../utils/math.h"
 #include <SDL_opengl.h> // macOS 上直接用这个
+#include <iostream>
 //SDL2 + OpenGL 旧式（Immediate Mode）
 // OpenGL 本身是一个渲染管线，它不会自己存储场景里物体的位置或逻辑关系，它只知道你给它 顶点坐标 和 变换矩阵
 // 为了方便处理场景，你通常会把场景中的物体放到一个 统一坐标系 中，这就是 世界坐标系 (World Space)
@@ -132,13 +133,15 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     Position* camPos = nullptr;
     Camera* cam = nullptr;
     for (auto e : em.view<Position, Camera>()) {
-        auto* camPos = em.get<Position>(e);
-        auto* cam = em.get<Camera>(e);
+        camPos = em.get<Position>(e);
+        cam = em.get<Camera>(e);
+        std:: cout << cam->pitch << "@";
+        std:: cout << camPos->position.z << "#";
         break; //表示只用一个camera
     }
     if (!cam || !camPos) {
-        printf("ha!");
-        return; // 或者直接不渲染摄像机
+        printf("!!");
+        return; 
     }
     // 用 yaw / pitch 计算方向
     float yawRad   = cam->yaw   * M_PI / 180.f;
@@ -170,12 +173,7 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     }
     for (Entity e : em.view<Position>()) {
         auto* pos = em.get<Position>(e);
-        drawCube( //之后实现：玩家的位置不能当作方块渲染
-            pos->position.x,
-            pos->position.y,
-            pos->position.z,
-            1.5f
-        );
+        drawCube(pos->position.x,pos->position.y,pos->position.z,1.5f); //之后实现：玩家的位置不能当作方块渲染
     }
     SDL_GL_SwapWindow(window);
 }

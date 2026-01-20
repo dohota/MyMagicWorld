@@ -1,12 +1,6 @@
 #pragma once
 #include "../utils/math.h"
 #include <SDL_opengl.h> // macOS 上直接用这个
-
-// #ifndef COMPONENT_H
-// #define COMPONENT_H
-
-
-// #endif
 struct Position {
     Vec3 position;
 };

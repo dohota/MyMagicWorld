@@ -1,8 +1,6 @@
 #include <SDL_video.h>
 #include <iostream> // std::cerr
-#include "../system/system.h"
 #include "world.h"
-#include "../entity/entity.h" 
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
 void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     float fH = std::tan(fov * 0.5f * M_PI / 180.0f) * zNear;
@@ -47,12 +45,13 @@ World :: World() {
     this->running = true;
     SDL_SetRelativeMouseMode(SDL_TRUE);//防止鼠标没反应
     SDL_ShowCursor(SDL_DISABLE);
+    this->em = new EntityManager();
+    this->s = new SystemManager();
+    
 }
-void World :: update()  {
-    SystemManager s;
-    EntityManager em;
-    em.build("player");
-    em.build("grass_chunk");
+void World :: start()  {
+    this->em->build("player");
+    this->em->build("grass_chunk");
     //SDL_PumpEvents();
     Uint32 lastTime = SDL_GetTicks();
     while (this->running) {
@@ -69,10 +68,14 @@ void World :: update()  {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        s.update(em, dt,this->window);
+        this->s->update(*(this->em), dt,this->window);
     }
 }
 World::~World(){
+    delete this->s;
+    delete this->em;
+    this->s = nullptr;
+    this->em = nullptr;
     SDL_GL_DeleteContext(this->context);
     SDL_DestroyWindow(window);
     SDL_Quit();

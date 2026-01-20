@@ -1,13 +1,8 @@
 #pragma once
-#include <cstdint>
-#include <unordered_map>
+#include "../component/manager.h"
 #include <vector>
 #include <typeindex>
 #include <memory>
-
-using Entity = std::uint32_t;
-
-constexpr Entity kInvalidEntity = 0;
 
 class EntityManager {
 public:
@@ -31,10 +26,12 @@ public:
 private:
     Entity nextEntity{1};
     // 每种组件类型一个容器
-    std::unordered_map<
-        std::type_index,
-        std::unordered_map<Entity, std::shared_ptr<void>>
-    > components;
+    // std::unordered_map<
+    //     std::type_index,
+    //     std::unordered_map<Entity, std::shared_ptr<void>>
+    // > components;
+    std::unordered_map<std::type_index, std::unique_ptr<Pool>> pools;
+
     // 最外层 unordered_map
 //     components[typeid(Position)]  -> Position 的组件池
 // components[typeid(Velocity)]  -> Velocity 的组件池
@@ -42,32 +39,52 @@ private:
 
 template<typename T>
 void EntityManager::add(Entity e, T component) {
-    components[typeid(T)][e] =
-        std::make_shared<T>(std::move(component));
+    auto& poolBase = pools[typeid(T)];
+
+    if (!poolBase) {
+        poolBase = std::make_unique<ComponentPool<T>>();
+    }
+
+    auto* pool = static_cast<ComponentPool<T>*>(poolBase.get());
+    pool->data[e] = std::move(component);
+}
+template<typename T>
+void EntityManager::remove(Entity e) {
+    auto it = pools.find(typeid(T));
+    if (it == pools.end()) return;
+
+    auto* pool = static_cast<ComponentPool<T>*>(it->second.get());
+    pool->data.erase(e);
 }
 
 template<typename T>
 T* EntityManager::get(Entity e) {
-    auto it = components.find(typeid(T));
-    if (it == components.end()) return nullptr;
+    auto it = pools.find(typeid(T));
+    if (it == pools.end()) return nullptr;
+    //printf("---get--");
+    auto* pool = static_cast<ComponentPool<T>*>(it->second.get());
 
-    auto jt = it->second.find(e);
-    if (jt == it->second.end()) return nullptr;
+    auto jt = pool->data.find(e);
+    if (jt == pool->data.end()) return nullptr;
 
-    return static_cast<T*>(jt->second.get()); // 有概率炸
+    return &jt->second;
 }
 
 template<typename... Ts>
 std::vector<Entity> EntityManager::view() {
     std::vector<Entity> result;
+    
+    using First = std::tuple_element_t<0, std::tuple<Ts...>>;
 
-    auto& firstPool = components[typeid(
-        std::tuple_element_t<0, std::tuple<Ts...>>
-    )];
+    auto it = pools.find(typeid(First));
+    if (it == pools.end()) return result;
 
-    for (auto& [entity, _] : firstPool) {
-        if ((get<Ts>(entity) && ...)) {
-            result.push_back(entity);
+    auto* firstPool = static_cast<ComponentPool<First>*>(it->second.get());
+    
+    for (auto& [e, _] : firstPool->data) {
+        if ((get<Ts>(e) && ...)) {
+            result.push_back(e);
+            //printf("++++view++");
         }
     }
     return result;
