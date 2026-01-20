@@ -43,26 +43,23 @@ system尽量都写成类
 第二个正式版本！
 entity manager已经有manage component的功能了，接下来就只要ComponentPool来管理组件的数据结构了
 ComponentPool 天然适合 SIMD / 性能优化
+#### v 1.4.6
+有简单的随机地形，除了摄像机外没啥bug
 
+修复摄像机问题：
+鼠标仅转动视角，不影响移动方向和移动速度
+wasd人物向视角前后左右移动。space shift人物上下移动（地面模式：space跳跃 shift潜行）
+按p 切换飞行模式和地面模式
+左键放置方块，右键删除方块 （由raycast决定放置在哪，删除哪个）
 
+实现简单的物理引擎：aabb碰撞箱，跳跃/重力系统
 
 🔥 继续：
-
 view<T...>() 选最小 pool（O(min)）
-
 SoA / SIMD MoveSystem
-
 🧠 进阶：
-
 去掉 unordered_map → dense type id
-
 archetype / chunk layout
-
 🎮 工程化：
-
 scheduler
-
 system dependency graph
-
-管理不同world：world manager，这个暂时不需要
-尽量让人物在地面上走，仿照初代mc飞行模式和生存模式，这样摄像机就会好弄一点

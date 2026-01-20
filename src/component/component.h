@@ -9,7 +9,6 @@ struct Velocity {
     Vec3 value;
 };
 
-
 struct Camera {
     float yaw = -90.f;
     float pitch = 0.f;
@@ -30,17 +29,15 @@ struct Mesh {
     GLuint vbo = 0;
     int vertexCount = 0;
 };
-
-
-
-struct Control {
+struct Gravity{
+    float g = 9.8;
+};
+struct Size {
+    Vec3 value;
+};
+struct GroupPosition{
     
-}; 
-
-struct Block {
+};
+struct GroupSize{
     
-}; // 单个方块
-
-struct Chunk{
-    
-};//一大组方块
+};
