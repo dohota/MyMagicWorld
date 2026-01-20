@@ -12,6 +12,10 @@ add_executable(MyWorld
     src/system/manager.cpp
     src/system/move.cpp
     src/system/render.cpp
+    src/component/manager.cpp
+    src/entity/manager.cpp
+    src/utils/math.cpp
+    src/world/manager.cpp
 )
 
 

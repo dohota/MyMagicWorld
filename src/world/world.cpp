@@ -1,15 +1,9 @@
-#include <iostream>
+#include <SDL_video.h>
+#include <iostream> // std::cerr
 #include "../system/system.h"
 #include "world.h"
+#include "../entity/entity.h" 
 //#include <OpenGL/glu.h> //在 macOS 上，必须额外 include GLU，半弃用的状态
-Entity World::createEntity() {
-    return nextEntity_++;
-}
-void World::destroyEntity(Entity e) {
-    transforms_.erase(e);
-    velocities_.erase(e);
-}
-
 void World :: setPerspective(float fov, float aspect, float zNear, float zFar) {
     float fH = std::tan(fov * 0.5f * M_PI / 180.0f) * zNear;
     float fW = fH * aspect;
@@ -42,7 +36,7 @@ World :: World() {
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         800, 600,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE//SDL_WINDOW_FULLSCREEN_DESKTOP//全屏标志
     );
     // 3. 创建 OpenGL 上下文
     this->context = SDL_GL_CreateContext(this->window);
@@ -51,36 +45,21 @@ World :: World() {
         return;
     }
     this->running = true;
-    this->start();
-}
-void World :: start(){
     SDL_SetRelativeMouseMode(SDL_TRUE);//防止鼠标没反应
     SDL_ShowCursor(SDL_DISABLE);
-    //===== 玩家（摄像机）=====
-    this->player = createEntity();
-    addComponent<Position>(player, {{0, 2, 5}});
-    addComponent<Velocity>(player, {{0, 0, 0}});
-    addComponent<Camera>(player, {});
-
 }
 void World :: update()  {
-    //===== 平原方块 =====
-    for (float x = -20; x <= 10; x+=1.5) {
-        for (float y = -10; y <= 3; y+=1.5){
-            for (float z = -5; z <= 14; z+=1.5) {
-                Entity block = createEntity();
-                addComponent<Position>(block, {{x, y, z}});
-            }
-        }
-    }
     SystemManager s;
+    EntityManager em;
+    em.build("player");
+    em.build("grass_chunk");
     //SDL_PumpEvents();
     Uint32 lastTime = SDL_GetTicks();
     while (this->running) {
         Uint32 current = SDL_GetTicks();
         float dt = (current - lastTime) / 1000.f;
         lastTime = current;
-        // 4. 事件处理
+        
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
@@ -90,14 +69,10 @@ void World :: update()  {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        s.update(*this, dt);
-        // input_system(*this, dt);     // WASD + 鼠标
-        // move_system(*this, dt); // 暂时不固定 dt 为16ms
-        // render_system(*this);
+        s.update(em, dt,this->window);
     }
 }
 World::~World(){
-    // 7. 清理
     SDL_GL_DeleteContext(this->context);
     SDL_DestroyWindow(window);
     SDL_Quit();

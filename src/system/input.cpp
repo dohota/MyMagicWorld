@@ -10,21 +10,21 @@ InputSystem :: InputSystem() {
 void InputSystem :: start(){
     
 }
-void InputSystem :: update(World& world, float dt)  {
+void InputSystem :: update(EntityManager& em, float dt)  {
     SDL_PumpEvents();//虽然调用了 SDL_PollEvent，但在某些情况下（特别是 macOS）必须保证这一句在前面
     int dx, dy;
     SDL_GetRelativeMouseState(&dx, &dy);
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    for (auto& [e, cam] : world.cameras_) {
-        auto* pos = world.getComponent<Position>(e);
-        auto* vel = world.getComponent<Velocity>(e);
+    for (auto e : em.view<Position, Velocity,Camera>()) {
+        auto* pos = em.get<Position>(e);
+        auto* vel = em.get<Velocity>(e);
         if (!pos || !vel) continue;
-
+        auto* cam = em.get<Camera>(e);
         // 计算摄像机前向和右向
-        float yawRad = cam.yaw * M_PI/180.0f;
-        float pitchRad = cam.pitch * M_PI/180.0f;
+        float yawRad = cam->yaw * M_PI/180.0f;
+        float pitchRad = cam->pitch * M_PI/180.0f;
 
         Vec3 front{
             // cosf(yawRad) * cosf(pitchRad),
@@ -44,13 +44,13 @@ void InputSystem :: update(World& world, float dt)  {
         if (state[SDL_SCANCODE_A]) vel->value -= right * speed;
         if (state[SDL_SCANCODE_D]) vel->value += right * speed;
         // 鼠标控制摄像机角度
-        cam.yaw   += dx * 0.1f;
-        cam.pitch -= dy * 0.1f;
-        if (cam.pitch > 89.f) cam.pitch = 89.f;
-        if (cam.pitch < -89.f) cam.pitch = -89.f;
+        cam->yaw   += dx * 0.1f;
+        cam->pitch -= dy * 0.1f;
+        if (cam->pitch > 89.f) cam->pitch = 89.f;
+        if (cam->pitch < -89.f) cam->pitch = -89.f;
         //new code
-        cam.yaw = fmodf(cam.yaw, 360.0f);
-        if (cam.yaw < 0) cam.yaw += 360.0f;
+        cam->yaw = fmodf(cam->yaw, 360.0f);
+        if (cam->yaw < 0) cam->yaw += 360.0f;
     }
 }
 InputSystem::~InputSystem(){

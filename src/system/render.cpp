@@ -1,27 +1,24 @@
 #include "../system/system.h"
+#include "../component/component.h"
+#include "../utils/math.h"
+#include <SDL_opengl.h> // macOS 上直接用这个
 //SDL2 + OpenGL 旧式（Immediate Mode）
+// OpenGL 本身是一个渲染管线，它不会自己存储场景里物体的位置或逻辑关系，它只知道你给它 顶点坐标 和 变换矩阵
+// 为了方便处理场景，你通常会把场景中的物体放到一个 统一坐标系 中，这就是 世界坐标系 (World Space)
 
-// OpenGL 本身是一个渲染管线，它不会自己存储场景里物体的位置或逻辑关系，它只知道你给它 顶点坐标 和 变换矩阵。
-
-// 为了方便处理场景，你通常会把场景中的物体放到一个 统一坐标系 中，这就是 世界坐标系 (World Space)。
-
-// 世界坐标系：整个场景的参考坐标系。比如你做一个 Minecraft 世界，地面在 y=0，树在 (x=5, y=0, z=3)，所有物体的位置都相对于这个坐标系来描述。
-
+// 世界坐标系：整个场景的参考坐标系。比如你做一个 Minecraft 世界，地面在 y=0，树在 (x=5, y=0, z=3)，所有物体的位置都相对于这个坐标系来描述
 // 局部坐标系 (Local/Object Space)：每个物体自己的坐标系。比如一个立方体的顶点坐标可能是 (0,0,0) 到 (1,1,1)，这是它自身的局部坐标
 //-----
 // 世界 = 你的场景地图，所有物体都有自己的“地图坐标”
-
 // 模型矩阵 = 把物体放到地图上的位置
-
-// 视图矩阵 = 摄像机站在哪看地图
-
+// 视图矩阵 = 摄像机站在哪看地
 // 投影矩阵 = 摄像机镜头把 3D 映射成 2D
 void RenderSystem :: drawCube(float x, float y, float z, float s) {
     // --- 绘制面片 ---
     glEnable(GL_POLYGON_OFFSET_FILL);      // 开启深度偏移
     glPolygonOffset(1.0f, 1.0f);          // 防止线条 z-fighting
     glBegin(GL_QUADS);
-
+    
     // 所有面颜色统一为绿色
     glColor3f(0.3f, 0.8f, 0.3f);
 
@@ -114,11 +111,10 @@ RenderSystem :: RenderSystem() {
 void RenderSystem :: start(){
     
 }
-void RenderSystem :: update(World& world)  {
+void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     glEnable(GL_DEPTH_TEST);
-
     int w, h;
-    SDL_GetWindowSize(world.window, &w, &h);
+    SDL_GetWindowSize(window, &w, &h);
 
     glViewport(0, 0, w, h);
 
@@ -133,13 +129,16 @@ void RenderSystem :: update(World& world)  {
     glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
     //glTranslatef(0, 0, -15);//把整个世界移动 便于观察
 
-    //1️⃣ 找摄像机
     Position* camPos = nullptr;
     Camera* cam = nullptr;
-    for (auto& [e, c] : world.cameras_) {
-        cam = &c;
-        camPos = world.getComponent<Position>(e);
-        break;
+    for (auto e : em.view<Position, Camera>()) {
+        auto* camPos = em.get<Position>(e);
+        auto* cam = em.get<Camera>(e);
+        break; //表示只用一个camera
+    }
+    if (!cam || !camPos) {
+        printf("ha!");
+        return; // 或者直接不渲染摄像机
     }
     // 用 yaw / pitch 计算方向
     float yawRad   = cam->yaw   * M_PI / 180.f;
@@ -169,14 +168,16 @@ void RenderSystem :: update(World& world)  {
         glRotatef(-cam->yaw,   0, 1, 0); // 绕世界 Y
         
     }
-    int a = 0;
-    for (auto& [e, pos] : world.transforms_) {
-        //之后实现：玩家的位置不能当作方块渲染
-        //if(a!=0)
-        drawCube(pos.position.x, pos.position.y, pos.position.z, 1.5f);
-        //a++;
+    for (Entity e : em.view<Position>()) {
+        auto* pos = em.get<Position>(e);
+        drawCube( //之后实现：玩家的位置不能当作方块渲染
+            pos->position.x,
+            pos->position.y,
+            pos->position.z,
+            1.5f
+        );
     }
-    SDL_GL_SwapWindow(world.window);
+    SDL_GL_SwapWindow(window);
 }
 RenderSystem::~RenderSystem(){
     

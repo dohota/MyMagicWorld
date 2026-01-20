@@ -36,9 +36,11 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 慢慢解耦合：
 system尽量都写成类
 并且设置system manager
-
-#### 。
+#### v 1.4.4
 创造销毁实体，增加删除实体组件：entity manager
-管理组件的数据结构：component manager
+但是出了点问题，所以接下来我要引入类似一个component manager（管理组件的数据结构）
+
+
+#### v 1.4.5
 管理不同world：world manager，这个暂时不需要
 尽量让人物在地面上走，仿照初代mc飞行模式和生存模式，这样摄像机就会好弄一点

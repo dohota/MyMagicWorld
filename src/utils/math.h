@@ -1,3 +1,4 @@
+#pragma once
 #include <cmath>
 struct Vec3 {
     float x, y, z;

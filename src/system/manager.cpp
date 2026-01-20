@@ -1,4 +1,5 @@
 #include "../system/system.h"
+#include "../entity/entity.h"
 SystemManager :: SystemManager() {
     this->s1 = new InputSystem();
     this->s2 = new MovementSystem();
@@ -8,10 +9,10 @@ SystemManager :: SystemManager() {
 void SystemManager :: start(){
     
 }
-void SystemManager :: update(World& world, float dt)  {
-    this->s1->update(world,dt);
-    this->s2->update(world,dt);
-    this->s3->update(world);
+void SystemManager :: update(EntityManager& em, float dt,SDL_Window* window)  {
+    this->s1->update(em,dt);
+    this->s2->update(em,dt);
+    this->s3->update(em,window);
 }
 SystemManager::~SystemManager(){
     delete this->s1;
