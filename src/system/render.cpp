@@ -15,6 +15,44 @@
 // 模型矩阵 = 把物体放到地图上的位置
 // 视图矩阵 = 摄像机站在哪看地
 // 投影矩阵 = 摄像机镜头把 3D 映射成 2D
+void RenderSystem :: drawCrosshair(int screenWidth, int screenHeight, float size, float thickness) {
+    // 保存矩阵状态
+    glPushMatrix();
+    
+    // 使用正交投影，让坐标就是屏幕像素
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // 设置颜色
+    glColor3f(1.0f, 1.0f, 1.0f); // 白色
+
+    // 屏幕中心
+    float cx = screenWidth  / 2.0f;
+    float cy = screenHeight / 2.0f;
+
+    glLineWidth(thickness);
+    glBegin(GL_LINES);
+        // 水平线
+        glVertex2f(cx - size, cy);
+        glVertex2f(cx + size, cy);
+        // 垂直线
+        glVertex2f(cx, cy - size);
+        glVertex2f(cx, cy + size);
+    glEnd();
+
+    // 恢复矩阵
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+}
 void RenderSystem :: drawCube(float x, float y, float z, float s) {
     // --- 绘制面片 ---
     glEnable(GL_POLYGON_OFFSET_FILL);      // 开启深度偏移
@@ -117,7 +155,6 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     glEnable(GL_DEPTH_TEST);
     int w, h;
     SDL_GetWindowSize(window, &w, &h);
-
     glViewport(0, 0, w, h);
 
     glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
@@ -130,7 +167,8 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
     //glTranslatef(0, 0, -15);//把整个世界移动 便于观察
-
+    drawCrosshair(w, h, 10.0f, 2.0f); // draw crossing
+    
     Position* camPos = nullptr;
     Camera* cam = nullptr;
     for (auto e : em.view<Position, Camera>()) {
@@ -152,12 +190,9 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
         -cosf(pitchRad) * cosf(yawRad)
     };
     front = normalize(front);
-
     Vec3 right = normalize(cross(front, Vec3{0,1,0}));
     Vec3 up    = cross(right, front);
-
     Vec3 target = camPos->position + front;
-
 // 🔥 真正的摄像机
 // gluLookAt(
 //     camPos->position.x, camPos->position.y, camPos->position.z,
@@ -165,14 +200,15 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
 //     up.x,               up.y,               up.z
 // );
     if (cam && camPos) {
-        glTranslatef(-camPos->position.x, -camPos->position.y, -camPos->position.z);
+        //OpenGL 是 右乘矩阵，实际执行顺序是反过来的：先 yaw再 pitch 再 translate!!
         glRotatef(-cam->pitch, 1, 0, 0); // 绕局部 X
         glRotatef(-cam->yaw,   0, 1, 0); // 绕世界 Y
-        
+        glTranslatef(-camPos->position.x, -camPos->position.y, -camPos->position.z);   
     }
     for (Entity e : em.view<Position>()) {
+        if (camPos && em.get<Position>(e) == camPos) continue; //玩家的位置不能当作方块渲染
         auto* pos = em.get<Position>(e);
-        drawCube(pos->position.x,pos->position.y,pos->position.z,1.5f); //之后实现：玩家的位置不能当作方块渲染
+        drawCube(pos->position.x,pos->position.y,pos->position.z,1.5f); 
     }
     SDL_GL_SwapWindow(window);
 }

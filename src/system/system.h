@@ -29,6 +29,7 @@ public:
 private:
     void drawCube(float x, float y, float z, float s);
     void gluPerspective(float fov, float aspect, float zNear, float zFar);
+    void drawCrosshair(int screenWidth, int screenHeight, float size = 10.0f, float thickness = 1.0f); // 十字准星
 };
 
 class SystemManager  {

@@ -25,7 +25,6 @@ brew下载了cmake，ninja，vcpkg，然后项目好像就能自动识别了
 第一个正式版本！
 可以wasd移动摄像机，移动鼠标来实现视角的移动————————但是有bug，更像是整个世界的移动
 ————渲染方面 又绿又黑的，可能是opengl没弄好
-
 暂时不分entity manager，component manager，system manager，world manager，全耦合在world里比较方便
 各个system以头文件，内联函数形式提供
 #### v 1.4.1
@@ -45,14 +44,26 @@ entity manager已经有manage component的功能了，接下来就只要Componen
 ComponentPool 天然适合 SIMD / 性能优化
 #### v 1.4.6
 有简单的随机地形，除了摄像机外没啥bug
+#### v1.4.7
+实现了十字准星
 
 修复摄像机问题：
 鼠标仅转动视角，不影响移动方向和移动速度
-wasd人物向视角前后左右移动。space shift人物上下移动（地面模式：space跳跃 shift潜行）
+wasd人物向视角前后左右移动
+
+现在还是有一个小问题：
+wasd方向一直不一样
+
+
 按p 切换飞行模式和地面模式
+飞行模式:
+space shift人物上下移动, 无视碰撞体
+地面模式：
+space跳跃 shift潜行
 左键放置方块，右键删除方块 （由raycast决定放置在哪，删除哪个）
 
 实现简单的物理引擎：aabb碰撞箱，跳跃/重力系统
+聪明的渲染：剔除看不见的面。 实现简单的chunk加载与删除，无限地形
 
 🔥 继续：
 view<T...>() 选最小 pool（O(min)）
