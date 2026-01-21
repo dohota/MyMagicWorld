@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "../entity/entity.h"
+#include "../component/component.h"
 class InputSystem  {
 public:
     int prior = 1; //是第几个运行的系统
@@ -17,6 +18,21 @@ public:
     void start();
     void update(EntityManager& em, float dt);
     ~MovementSystem();
+};
+
+class CollisionSystem{
+public:
+    int prior = 2;
+    CollisionSystem();
+    void start();
+    void update(EntityManager& em, float dt);
+    ~CollisionSystem();
+private:
+    float resolveAxis(EntityManager& em,Entity self,const AABB& box,float d, Axis axis);
+    float clip(const AABB& a,const AABB& b,float d,Axis axis);
+    bool overlapsOnOtherAxes(const AABB& a,const AABB& b,Axis axis);
+    float getMin(const AABB& b, Axis a);
+    float getMax(const AABB& b, Axis a);
 };
 
 class RenderSystem  {
@@ -43,4 +59,5 @@ private:
     InputSystem*    s1 = nullptr;
     MovementSystem* s2 = nullptr;
     RenderSystem*   s3 = nullptr;
+    CollisionSystem* s4 = nullptr;
 };

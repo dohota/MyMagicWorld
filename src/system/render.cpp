@@ -208,7 +208,8 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     for (Entity e : em.view<Position>()) {
         if (camPos && em.get<Position>(e) == camPos) continue; //玩家的位置不能当作方块渲染
         auto* pos = em.get<Position>(e);
-        drawCube(pos->position.x,pos->position.y,pos->position.z,1.5f); 
+        auto* s = em.get<Size>(e);
+        drawCube(pos->position.x,pos->position.y,pos->position.z,s->value.x); 
     }
     SDL_GL_SwapWindow(window);
 }

@@ -15,9 +15,14 @@ Entity EntityManager::create() {
 void EntityManager::build(const std::string& s) {
     if (s == "player"){
         Entity player = this->create();
-        this->add<Position>(player, {{-3, -2, 10}});
+        this->add<Position>(player, {{3, 18, 5}});
         this->add<Velocity>(player, {{0, 0, 0}});
         this->add<Camera>(player, {});
+        this->add<Gravity>(player, {});
+        this->add<Size>(player, {{0.3, 3, 0.3}});
+        auto* pos = this->get<Position>(player);
+        this->add<Collider>(player, {{{pos->position.x,pos->position.y,pos->position.z},
+            {pos->position.x+0.1f,pos->position.y+0.1f,pos->position.z+0.1f}},false});
     }else if(s == "grass_block"){
 
     }else if(s == "grass_chunk"){
@@ -37,6 +42,9 @@ void EntityManager::build(const std::string& s) {
                 for (int y = 0; y <= height; y++){
                     Entity block = this->create();
                     this->add<Position>(block, {{x, static_cast<float>(y), z}});
+                    this->add<Size>(block, {{1.5, 1.5, 1.5}});
+                    this->add<Collider>(block, {{{x, static_cast<float>(y), z},
+                    {x+1.5f, static_cast<float>(y)+1.5f, z+1.5f}},true});
                 }
             }
         }

@@ -26,10 +26,10 @@ public:
 private:
     Entity nextEntity{1};
     // 每种组件类型一个容器
-    // std::unordered_map<
-    //     std::type_index,
-    //     std::unordered_map<Entity, std::shared_ptr<void>>
-    // > components;
+            // std::unordered_map<
+            //     std::type_index,
+            //     std::unordered_map<Entity, std::shared_ptr<void>>
+            // > components;
     std::unordered_map<std::type_index, std::unique_ptr<Pool>> pools;
 
     // 最外层 unordered_map
@@ -61,7 +61,6 @@ template<typename T>
 T* EntityManager::get(Entity e) {
     auto it = pools.find(typeid(T));
     if (it == pools.end()) return nullptr;
-    //printf("---get--");
     auto* pool = static_cast<ComponentPool<T>*>(it->second.get());
 
     auto jt = pool->data.find(e);
@@ -84,7 +83,6 @@ std::vector<Entity> EntityManager::view() {
     for (auto& [e, _] : firstPool->data) {
         if ((get<Ts>(e) && ...)) {
             result.push_back(e);
-            //printf("++++view++");
         }
     }
     return result;
