@@ -12,8 +12,9 @@ void SystemManager :: start(){
 }
 void SystemManager :: update(EntityManager& em, float dt,SDL_Window* window)  {
     this->s1->update(em,dt);
-    this->s2->update(em,dt);
     this->s4->update(em,dt);
+    this->s2->update(em,dt);
+    
     this->s3->update(em,window);
 }
 SystemManager::~SystemManager(){

@@ -21,8 +21,13 @@ void EntityManager::build(const std::string& s) {
         this->add<Gravity>(player, {});
         this->add<Size>(player, {{0.3, 3, 0.3}});
         auto* pos = this->get<Position>(player);
-        this->add<Collider>(player, {{{pos->position.x,pos->position.y,pos->position.z},
-           {pos->position.x+0.1f,pos->position.y+0.1f,pos->position.z+0.1f}},false});
+        Collider playerCollider;
+        playerCollider.localBox = {
+            {-0.3f, 0.0f, -0.3f},
+            { 0.3f, 1.8f,  0.3f} // position是脚底中间的位置
+        };
+        playerCollider.isStatic = false;
+        this->add<Collider>(player, playerCollider);
     }else if(s == "grass_block"){
 
     }else if(s == "grass_chunk"){
@@ -43,8 +48,14 @@ void EntityManager::build(const std::string& s) {
                     Entity block = this->create();
                     this->add<Position>(block, {{x, static_cast<float>(y), z}});
                     this->add<Size>(block, {{1.5, 1.5, 1.5}});
-                    this->add<Collider>(block, {{{x, static_cast<float>(y), z},
-                    {x+1.5f, static_cast<float>(y)+1.5f, z+1.5f}},true});
+                    auto* pos = this->get<Position>(block);
+                    Collider collider;
+                    collider.localBox = {
+                        {-0.75f, 0.0f, -0.75f},
+                        { 0.75f, 1.5f,  0.75f}
+                    };
+                    collider.isStatic = true;
+                    this->add<Collider>(block, collider);
                 }
             }
         }
