@@ -37,3 +37,12 @@
 394	425	1769089872961339884	MyWorld	f8f9a491a07064d1
 13	496	1769090472952535279	CMakeFiles/MyWorld.dir/src/system/collision.cpp.o	f9e04e5a71f49341
 496	537	1769090473436021413	MyWorld	f8f9a491a07064d1
+8	675	1769092514627109696	CMakeFiles/MyWorld.dir/src/main.cpp.o	ef9426a1df2ad71b
+9	676	1769092514628420371	CMakeFiles/MyWorld.dir/src/system/manager.cpp.o	23af641cd80f8eea
+9	680	1769092514628671789	CMakeFiles/MyWorld.dir/src/system/move.cpp.o	f2a28319819003f2
+9	750	1769092514628019410	CMakeFiles/MyWorld.dir/src/system/input.cpp.o	d37a2fe85aa12c94
+8	763	1769092514627781325	CMakeFiles/MyWorld.dir/src/world/world.cpp.o	e6fe767bf3e55291
+10	772	1769092514629507085	CMakeFiles/MyWorld.dir/src/system/collision.cpp.o	f9e04e5a71f49341
+10	773	1769092514629180042	CMakeFiles/MyWorld.dir/src/system/render.cpp.o	5e90b038553cb4aa
+12	870	1769092514631914474	CMakeFiles/MyWorld.dir/src/entity/manager.cpp.o	968b0b9346223e0d
+870	957	1769092515489724292	MyWorld	f8f9a491a07064d1

@@ -168,18 +168,18 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
     //glTranslatef(0, 0, -15);//把整个世界移动 便于观察
     drawCrosshair(w, h, 10.0f, 2.0f); // draw crossing
-    
+
+    Entity camEntity = 0;
     Position* camPos = nullptr;
     Camera* cam = nullptr;
     for (auto e : em.view<Position, Camera>()) {
         camPos = em.get<Position>(e);
         cam = em.get<Camera>(e);
-        break; //表示只用一个camera
+        camEntity = e;
+        break; // 只取一个camera
     }
-    if (!cam || !camPos) {
-        printf("!!");
-        return; 
-    }
+    if (!cam || !camPos) return;
+
     // 用 yaw / pitch 计算方向
     float yawRad   = cam->yaw   * M_PI / 180.f;
     float pitchRad = cam->pitch * M_PI / 180.f;
@@ -193,26 +193,79 @@ void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
     Vec3 right = normalize(cross(front, Vec3{0,1,0}));
     Vec3 up    = cross(right, front);
     Vec3 target = camPos->position + front;
+    // 视锥剔除参数（简化版）
+    float fov = 70.0f * M_PI / 180.0f; // 垂直视角弧度
+    float aspect = (float)w / h;
+    float nearPlane = 0.1f;
+    float farPlane  = 100.0f;
+    float tanHalfFOV = tanf(fov / 2.0f);
+    //OpenGL 是 右乘矩阵，实际执行顺序是反过来的：先 yaw再 pitch 再 translate!!
+    glRotatef(-cam->pitch, 1, 0, 0); // 绕局部 X
+    glRotatef(-cam->yaw,   0, 1, 0); // 绕世界 Y
+    glTranslatef(-camPos->position.x, -camPos->position.y, -camPos->position.z);   
+    
+    for (Entity e : em.view<Position>()) {
+        //if (e == camEntity) continue; // 剔除摄像机自身
+        if (camPos && em.get<Position>(e) == camPos) continue; //玩家的位置不能当作方块渲染
+        auto* pos = em.get<Position>(e);
+        auto* s = em.get<Size>(e);
+        auto* coll = em.get<Collider>(e);
+        if (!pos || !s || !coll) continue;
+        // 计算实体 AABB 世界坐标
+        Vec3 aabbMin = pos->position + coll->localBox.min;
+        Vec3 aabbMax = pos->position + coll->localBox.max;
+        // 用 AABB 八个顶点检查是否在视锥内
+        bool visible = false;
+        for (int ix = 0; ix <= 1 && !visible; ix++) {
+            for (int iy = 0; iy <= 1 && !visible; iy++) {
+                for (int iz = 0; iz <= 1 && !visible; iz++) {
+                    Vec3 corner{
+                        ix ? aabbMax.x : aabbMin.x,
+                        iy ? aabbMax.y : aabbMin.y,
+                        iz ? aabbMax.z : aabbMin.z
+                    };
+                    Vec3 toCorner = corner - camPos->position;
+                    Vec3 camSpace{
+                        dot(toCorner, right),
+                        dot(toCorner, up),
+                        dot(toCorner, front)
+                    };
+
+                    // 前后平面
+                    if (camSpace.z < nearPlane || camSpace.z > farPlane) continue;
+                    float yLimit = camSpace.z * tanHalfFOV;
+                    float xLimit = yLimit * aspect;
+                    if (camSpace.x < -xLimit || camSpace.x > xLimit) continue;
+                    if (camSpace.y < -yLimit || camSpace.y > yLimit) continue;
+
+                    visible = true; // 有一个角点在视锥内即可
+                }
+            }
+        }
+        if (!visible) continue; // 剔除不可见实体
+        // // 世界坐标到摄像机局部坐标
+        // Vec3 toEntity = pos->position - camPos->position;
+        // Vec3 camSpace{
+        //     dot(toEntity, right),
+        //     dot(toEntity, up),
+        //     dot(toEntity, front)
+        // };
+        // // 简单视锥剔除
+        // if (camSpace.z < nearPlane || camSpace.z > farPlane) continue; // 前后平面剔除
+        // float yLimit = camSpace.z * tanHalfFOV;
+        // float xLimit = yLimit * aspect;
+        // if (camSpace.x < -xLimit || camSpace.x > xLimit) continue; // 水平剔除
+        // if (camSpace.y < -yLimit || camSpace.y > yLimit) continue; // 垂直剔除
+        drawCube(pos->position.x,pos->position.y,pos->position.z,s->value.x);
+    }
+    SDL_GL_SwapWindow(window);
+}
 // 🔥 真正的摄像机
 // gluLookAt(
 //     camPos->position.x, camPos->position.y, camPos->position.z,
 //     target.x,           target.y,           target.z,
 //     up.x,               up.y,               up.z
 // );
-    if (cam && camPos) {
-        //OpenGL 是 右乘矩阵，实际执行顺序是反过来的：先 yaw再 pitch 再 translate!!
-        glRotatef(-cam->pitch, 1, 0, 0); // 绕局部 X
-        glRotatef(-cam->yaw,   0, 1, 0); // 绕世界 Y
-        glTranslatef(-camPos->position.x, -camPos->position.y, -camPos->position.z);   
-    }
-    for (Entity e : em.view<Position>()) {
-        if (camPos && em.get<Position>(e) == camPos) continue; //玩家的位置不能当作方块渲染
-        auto* pos = em.get<Position>(e);
-        auto* s = em.get<Size>(e);
-        drawCube(pos->position.x,pos->position.y,pos->position.z,s->value.x); 
-    }
-    SDL_GL_SwapWindow(window);
-}
 RenderSystem::~RenderSystem(){
     
 }
