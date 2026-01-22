@@ -1,5 +1,17 @@
 #include "../system/system.h"
+// 请你确认你现在接受以下约定（这是 MC 原版的）：
 
+// Position = 脚底中心
+
+// Collider.localBox = 相对于脚底中心的形状
+
+// Collider.box = 世界坐标 AABB（运行时）
+
+// 永远不直接改 Position 来做碰撞
+
+// 只对 box 做 offset
+
+// 最后用 box 反推出 Position
 CollisionSystem :: CollisionSystem() {
     this->prior = 2;
     this->start();
@@ -13,20 +25,22 @@ void CollisionSystem :: start(){
 // 按照速度 / 位移裁剪
 // 按轴分离
 void CollisionSystem :: update(EntityManager& em, float dt)  {
-    for (auto e : em.view<Position,Collider>()) { //查询哪些实体是碰撞体
-        auto* pos = em.get<Position>(e);
-        auto* vel  = em.get<Velocity>(e);
-        auto* s  = em.get<Size>(e);
+    // 1️⃣ 先更新所有 worldBox（非常重要）
+    for (auto e : em.view<Position, Collider>()) {
+        auto* pos  = em.get<Position>(e);
         auto* coll = em.get<Collider>(e);
-        // coll->box.min.x = pos->position.x;
-        // coll->box.min.y = pos->position.y;
-        // coll->box.min.z = pos->position.z;
-        // coll->box.max.x = pos->position.x + s->value.x;
-        // coll->box.max.y = pos->position.y + s->value.y;
-        // coll->box.max.z = pos->position.z + s->value.z;
+        coll->box.min = pos->position + coll->localBox.min;
+        coll->box.max = pos->position + coll->localBox.max;
+    }
+    // 2️⃣ 再处理可移动实体的碰撞
+    for (auto e : em.view<Position, Collider, Velocity>()) {
+        auto* pos  = em.get<Position>(e);
+        auto* vel  = em.get<Velocity>(e);
+        auto* coll = em.get<Collider>(e);
         if(!vel) continue; //没有速度的entity采用另一种方式检测碰撞
+        if (coll->isStatic) continue;
         Vec3 move = vel->value * dt;
-        // X → Y → Z（MC 核心）
+        // X → Y → Z（MC 核心顺序）
         move.x = resolveAxis(em, e, coll->box, move.x, Axis::X);
         coll->box.offset(move.x, 0, 0);
 
@@ -35,8 +49,8 @@ void CollisionSystem :: update(EntityManager& em, float dt)  {
 
         move.z = resolveAxis(em, e, coll->box, move.z, Axis::Z);
         coll->box.offset(0, 0, move.z);
-
-        pos->position = coll->box.getCenter();
+        // 3️⃣ 用 box 反推 Position（绝对不要用 center）
+        pos->position = coll->box.min - coll->localBox.min;
     }
 }
 //按轴裁剪位移
@@ -56,11 +70,19 @@ float CollisionSystem::clip(const AABB& a,const AABB& b,float d,Axis axis) {
         return d;
 
     if (d > 0) {
-        float max = getMin(b, axis) - getMax(a, axis);
-        if (max < d) d = max;
+        // float max = getMin(b, axis) - getMax(a, axis);
+        // if (max < d) d = max;
+        if (getMin(b, axis) >= getMax(a, axis)) {
+            float max = getMin(b, axis) - getMax(a, axis);
+            if (max < d) d = max;
+        }
     } else {
-        float min = getMax(b, axis) - getMin(a, axis);
-        if (min > d) d = min;
+        // float min = getMax(b, axis) - getMin(a, axis);
+        // if (min > d) d = min;
+        if (getMax(b, axis) <= getMin(a, axis)) {
+            float min = getMax(b, axis) - getMin(a, axis);
+            if (min > d) d = min;
+        }
     }
     return d;
 }

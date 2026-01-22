@@ -50,23 +50,34 @@ struct AABB {
         min.y += dy; max.y += dy;
         min.z += dz; max.z += dz;
     }
-
     // 返回中心点（给 Position 用）
     Vec3 getCenter() const {
         return (min + max) * 0.5f;
     }
 };
 struct Collider {// 碰撞体
-    AABB box; // aabb碰撞体
-    bool isStatic; // true 表示静态方块，不会移动
+    AABB localBox; // 形状（相对于 Position）
+    AABB box;      // 世界坐标（运行时算）
+    bool isStatic; // true 表示静态方块，不会移动 // 玩家：isStatic = false// 地形方块：isStatic = true
 };
-// 玩家：isStatic = false
-// 地形方块：isStatic = true
-struct Ray {
-    Vec3 origin;
-    Vec3 dir; // 必须 normalize
-};
+
 // 射线 origin + t*dir 与 AABB 的相交测试，用于 方块拾取/攻击/瞄准
+struct RayCast {
+    Vec3 ray; 
+    float max_distance; // 最大距离
+};
+
+// 空结构体：用于做状态机，判断实体处于以下什么状态————在地面，跳跃中，掉落中，飞行中
+struct IsGround {
+};
+struct IsJump {
+};
+struct IsFall {
+};
+struct IsFly {
+};
+struct IsSwim {
+};
 
 struct GroupPosition{
     

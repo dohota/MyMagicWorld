@@ -22,7 +22,7 @@ void EntityManager::build(const std::string& s) {
         this->add<Size>(player, {{0.3, 3, 0.3}});
         auto* pos = this->get<Position>(player);
         this->add<Collider>(player, {{{pos->position.x,pos->position.y,pos->position.z},
-            {pos->position.x+0.1f,pos->position.y+0.1f,pos->position.z+0.1f}},false});
+           {pos->position.x+0.1f,pos->position.y+0.1f,pos->position.z+0.1f}},false});
     }else if(s == "grass_block"){
 
     }else if(s == "grass_chunk"){
