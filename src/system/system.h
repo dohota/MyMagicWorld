@@ -46,6 +46,8 @@ private:
     void drawCube(float x, float y, float z, float s);
     void gluPerspective(float fov, float aspect, float zNear, float zFar);
     void drawCrosshair(int screenWidth, int screenHeight, float size = 10.0f, float thickness = 1.0f); // 十字准星
+    bool isAABBVisible(const Vec3& camPos, const Vec3& camFront, const Vec3& camUp,
+                   float fov, float aspect, float nearDist, float farDist, const AABB& box);
 };
 
 class SystemManager  {
