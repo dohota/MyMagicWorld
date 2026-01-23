@@ -17,4 +17,5 @@ private:
     void setupProjection(int w, int h);
     SystemManager* s;
     EntityManager* em;
+    EventBus* ev;
 };

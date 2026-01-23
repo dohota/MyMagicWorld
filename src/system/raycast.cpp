@@ -9,7 +9,15 @@ RaycastSystem  :: RaycastSystem () {
 void RaycastSystem  :: start(){
     
 }
-void RaycastSystem::update(EntityManager& em, float dt) {
+void RaycastSystem::update(EntityManager& em, EventBus& ev, float dt) {
+    bool wantBreak = false;
+    bool wantPlace = false;
+    ev.subscribe<Destroy>([&](const Destroy& e){
+        wantBreak = true;
+    });
+    ev.subscribe<Build>([&](const Build& e){
+        wantPlace = true;
+    });
     // 只给“有 RayCast 的实体”算（一般只有玩家）
     for (auto e : em.view<Position, RayCast>()) {
         auto* pos = em.get<Position>(e);
@@ -40,50 +48,21 @@ void RaycastSystem::update(EntityManager& em, float dt) {
                     if (hitEntity == kInvalidEntity) continue;
                     bool leftClick  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
                     bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
-                    if (leftClick) {
+                    if (leftClick && wantBreak) {
                         printf("消除了某方块\n");
-                        em.destroy(hitEntity);
+                        ev.emit(EntityDestroy{ hitEntity});
                     }
-                    if (rightClick) {
+                    if (rightClick && wantPlace) {
                         Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
-                        em.build("grass_block", placePos);
                         printf("创造某方块！！\n");
+                        ev.emit(EntityBuild{ placePos, "grass_block" });
                     }
                 }
             }
         }
-        // printf("嗯嗯嗯\n");
-        // if (hitEntity == kInvalidEntity) continue;
-        // bool leftClick  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
-        // bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
-        // if (leftClick) {
-        //     printf("消除了某方块\n");
-        //     em.destroy(hitEntity);
-        // }
-        // if (rightClick) {
-        //     Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
-        //     em.build("grass_block", placePos);
-        //     printf("创造某方块！！\n");
-        // }
+
     }
 }
-//                     bool leftClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
-//                     if (leftClick && rc && hit) {
-//                         em.destroy(hitEntity);
-//                         printf("消除了某方块\n");
-//                     }
-//                     bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
-//                     if (rightClick && rc && hit) {
-//                         Vec3 blockSize = {1.5f, 1.5f, 1.5f};
-//                         Vec3 hitBlockPos = em.get<Position>(hitEntity)->position;
-//                         Vec3 placePos = hitBlockPos + hitNormal * blockSize;
-//                         em.build("grass_block", placePos);
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
 bool RaycastSystem::rayIntersectsAABB(const Vec3& origin, const Vec3& dir, const AABB& box,
         float maxDist, float& outT, Vec3& outNormal) {
     float tMin = 0.0f;

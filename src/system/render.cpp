@@ -151,7 +151,7 @@ RenderSystem :: RenderSystem() {
 void RenderSystem :: start(){
     
 }
-void RenderSystem :: update(EntityManager& em, SDL_Window* window)  {
+void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)  {
     glEnable(GL_DEPTH_TEST);
     int w, h;
     SDL_GetWindowSize(window, &w, &h);

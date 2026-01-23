@@ -5,12 +5,15 @@
 // #include <iostream>
 InputSystem :: InputSystem() {
     this->prior = 1;
+    this->spaceTimer = 0.0f;
+    this->spaceCount = 0;
     this->start();
 }
 void InputSystem :: start(){
     
 }
-void InputSystem :: update(EntityManager& em, float dt)  {
+void InputSystem :: update(EntityManager& em, EventBus& ev, float dt)  {
+    spaceTimer += dt;
     SDL_PumpEvents();//虽然调用了 SDL_PollEvent，但在某些情况下（特别是 macOS）必须保证这一句在前面
     int dx, dy;
     SDL_GetRelativeMouseState(&dx, &dy);
@@ -21,7 +24,7 @@ void InputSystem :: update(EntityManager& em, float dt)  {
     // 移动速度（单位/秒）
     float speed = 5.0f; 
 
-    for (auto e : em.view<Position, Velocity,Camera>()) {
+    for (auto e : em.view<Position, Velocity, Camera>()) {
         auto* pos = em.get<Position>(e);
         auto* vel = em.get<Velocity>(e);
         auto* cam = em.get<Camera>(e);
@@ -64,7 +67,33 @@ void InputSystem :: update(EntityManager& em, float dt)  {
         // ====== 上下移动 ======
         if (state[SDL_SCANCODE_SPACE]) vel->value.y += speed ;
         if (state[SDL_SCANCODE_LSHIFT]) vel->value.y -= speed ;
-        if (state[SDL_SCANCODE_P]) printf("change fly/walk");
+        // ====== 双击空格 ======
+        if (state[SDL_SCANCODE_SPACE]) {
+            if (spaceTimer < 0.25f) {
+                spaceCount++;
+            } else {
+                spaceCount = 1;
+            }
+            spaceTimer = 0.0f; // 最后这些值要归零，所以说system是无状态的，之后可以封装计时器和计数器解决
+            if (spaceCount == 2) {
+                ev.emit(FlyMode{});
+                spaceCount = 0;
+            }
+        }
+        static Uint32 lastMouseState = 0;
+        Uint32 mouseState = SDL_GetMouseState(nullptr, nullptr);
+        // 鼠标左键 右键
+        bool leftDown  = (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) &&
+                        !(lastMouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
+        bool rightDown = (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) &&
+                        !(lastMouseState & SDL_BUTTON(SDL_BUTTON_RIGHT));
+        lastMouseState = mouseState;
+        if (leftDown) {
+            ev.emit(Build{});
+        }
+        if (rightDown) {
+            ev.emit(Destroy{});
+        }
     }
 }
 InputSystem::~InputSystem(){

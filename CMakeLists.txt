@@ -13,6 +13,7 @@ add_executable(MyWorld
     src/system/raycast.cpp
     src/system/render.cpp
     src/system/collision.cpp
+    src/system/entity.cpp
     src/component/manager.cpp
     src/entity/manager.cpp
     src/world/manager.cpp
