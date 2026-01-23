@@ -12,7 +12,7 @@ Entity EntityManager::create() {
 //     }
 // }
 
-void EntityManager::build(const std::string& s) {
+void EntityManager::build(const std::string& s, const Vec3 v) {
     if (s == "player"){
         Entity player = this->create();
         this->add<Position>(player, {{3, 18, 5}});
@@ -20,6 +20,7 @@ void EntityManager::build(const std::string& s) {
         this->add<Camera>(player, {});
         this->add<Gravity>(player, {});
         this->add<Size>(player, {{0.3, 3, 0.3}});
+        this->add<RayCast>(player,{{-90,0,70},100});
         auto* pos = this->get<Position>(player);
         Collider playerCollider;
         playerCollider.localBox = {
@@ -29,7 +30,17 @@ void EntityManager::build(const std::string& s) {
         playerCollider.isStatic = false;
         this->add<Collider>(player, playerCollider);
     }else if(s == "grass_block"){
-
+        Entity b = this->create();
+        this->add<Position>(b, {{v.x, v.y, v.z}});
+        this->add<Size>(b, {{1.5, 1.5, 1.5}});
+        auto* pos = this->get<Position>(b);
+        Collider collider;
+        collider.localBox = {
+            {-0.75f, 0.0f, -0.75f},
+            { 0.75f, 1.5f,  0.75f}
+        };
+        collider.isStatic = true;
+        this->add<Collider>(b, collider);
     }else if(s == "grass_chunk"){
         std::random_device rd;
         std::mt19937 gen(rd());

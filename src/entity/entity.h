@@ -1,5 +1,6 @@
 #pragma once
 #include "../component/manager.h"
+#include "../utils/math.h"
 #include <vector>
 #include <typeindex>
 #include <memory>
@@ -21,7 +22,7 @@ public:
     template<typename... Ts>
     std::vector<Entity> view(); //find
 
-    void build(const std::string& s); // 先create（），再添加组件
+    void build(const std::string& s, const Vec3 v = {0,0,0}); // 先create（），再添加组件
 
 private:
     Entity nextEntity{1};

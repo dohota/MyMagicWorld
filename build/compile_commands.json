@@ -25,9 +25,9 @@
 },
 {
   "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",
-  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/system/move.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/system/move.cpp",
-  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/system/move.cpp",
-  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/system/move.cpp.o"
+  "command": "/usr/bin/clang++ -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2 -g -std=gnu++20 -arch arm64 -o CMakeFiles/MyWorld.dir/src/system/raycast.cpp.o -c /Users/karl/Documents/programming/c/FirstWorld/src/system/raycast.cpp",
+  "file": "/Users/karl/Documents/programming/c/FirstWorld/src/system/raycast.cpp",
+  "output": "/Users/karl/Documents/programming/c/FirstWorld/build/CMakeFiles/MyWorld.dir/src/system/raycast.cpp.o"
 },
 {
   "directory": "/Users/karl/Documents/programming/c/FirstWorld/build",

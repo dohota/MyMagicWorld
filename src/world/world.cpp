@@ -50,8 +50,8 @@ World :: World() {
     
 }
 void World :: start()  {
-    this->em->build("player");
-    this->em->build("grass_chunk");
+    this->em->build("player",{0,0,0});
+    this->em->build("grass_chunk",{0,0,0});
     //SDL_PumpEvents();
     Uint32 lastTime = SDL_GetTicks();
     while (this->running) {

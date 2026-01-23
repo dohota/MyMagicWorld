@@ -10,7 +10,7 @@ add_executable(MyWorld
     src/world/world.cpp
     src/system/input.cpp
     src/system/manager.cpp
-    src/system/move.cpp
+    src/system/raycast.cpp
     src/system/render.cpp
     src/system/collision.cpp
     src/component/manager.cpp

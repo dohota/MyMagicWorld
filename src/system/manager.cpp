@@ -2,7 +2,7 @@
 #include "../entity/entity.h"
 SystemManager :: SystemManager() {
     this->s1 = new InputSystem();
-    this->s2 = new MovementSystem();
+    this->s2 = new RaycastSystem();
     this->s3 = new RenderSystem();
     this->s4 = new CollisionSystem();
     this->start();
@@ -14,7 +14,6 @@ void SystemManager :: update(EntityManager& em, float dt,SDL_Window* window)  {
     this->s1->update(em,dt);
     this->s4->update(em,dt);
     this->s2->update(em,dt);
-    
     this->s3->update(em,window);
 }
 SystemManager::~SystemManager(){

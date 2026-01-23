@@ -11,13 +11,19 @@ public:
     ~InputSystem();
 };
 
-class MovementSystem  {
+class RaycastSystem  {
 public:
-    int prior = 2;
-    MovementSystem(); //默认构造函数
+    int prior = 3;
+    RaycastSystem (); //默认构造函数
     void start();
     void update(EntityManager& em, float dt);
-    ~MovementSystem();
+    ~RaycastSystem ();
+private:
+    bool rayIntersectsAABB(
+    const Vec3& origin, const Vec3& dir,       // 必须是单位向量
+    const AABB& box,       // 世界坐标 AABB
+    float maxDist, float& outT,           // 输出：命中距离
+    Vec3& outNormal );       // 输出：命中面的法线
 };
 
 class CollisionSystem{
@@ -37,7 +43,7 @@ private:
 
 class RenderSystem  {
 public:
-    int prior = 3;
+    int prior = 4;
     RenderSystem(); //默认构造函数
     void start();
     void update(EntityManager& em, SDL_Window* window);
@@ -59,7 +65,7 @@ public:
 
 private:
     InputSystem*    s1 = nullptr;
-    MovementSystem* s2 = nullptr;
+    RaycastSystem* s2 = nullptr;
     RenderSystem*   s3 = nullptr;
     CollisionSystem* s4 = nullptr;
 };
