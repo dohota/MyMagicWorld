@@ -6,11 +6,41 @@ Entity EntityManager::create() {
     return nextEntity++;
 }
 
-// void EntityManager::destroy(Entity e) {
-//     for (auto& [_, pool] : pools) {
-//         pool->remove(e); 
-//     }
-// }
+void EntityManager::destroy(Entity e) {
+    if (e == kInvalidEntity) return;
+    for (auto& [type, pool] : pools) {
+        // 我们知道所有 pool 实际类型都是 ComponentPool<T>
+        // 所以可以用 void* + 模板技巧
+        auto* base = pool.get();
+
+        // 用一个通用 lambda 擦除
+        // 关键：unordered_map::erase 不存在 key 时是安全的
+        if (auto* p = dynamic_cast<ComponentPool<Position>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<Velocity>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<Collider>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<RayCast>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<Camera>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<Gravity>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<Size>*>(base)) {
+            p->data.erase(e);
+        }
+        if (auto* p = dynamic_cast<ComponentPool<AABB>*>(base)) {
+            p->data.erase(e);
+        }
+    }
+}
 
 void EntityManager::build(const std::string& s, const Vec3 v) {
     if (s == "player"){

@@ -1,4 +1,5 @@
 #include "../system/system.h"
+#include <SDL_mouse.h>
 //#include <iostream>
 // 根据速度，和位置 决定接下来的位置
 RaycastSystem  :: RaycastSystem () {
@@ -13,34 +14,76 @@ void RaycastSystem::update(EntityManager& em, float dt) {
     for (auto e : em.view<Position, RayCast>()) {
         auto* pos = em.get<Position>(e);
         auto* rc  = em.get<RayCast>(e);
-        bool hit = false;
-        int hitEntity = 0;
-        // 保证方向是单位向量
+
         Vec3 dir = normalize(rc->ray);
         float closest = rc->max_distance;
-        // 遍历所有可被射线命中的碰撞体
+
+        Entity hitEntity = kInvalidEntity;
+        Vec3 hitPoint;
+        Vec3 hitNormal;
         for (auto target : em.view<Collider>()) {
             if (target == e) continue;
             auto* coll = em.get<Collider>(target);
             if (!coll->isStatic) continue;
             float t;
             Vec3 normal;
-
-            Vec3 hitPoint;
-            Vec3 hitNormal;
+            coll->box.min = pos->position + coll->localBox.min;
+            coll->box.max = pos->position + coll->localBox.max;
             if (rayIntersectsAABB(pos->position, dir, coll->box,
-                 rc->max_distance, t, normal)) {
+                                  rc->max_distance, t, normal)) {
                 if (t < closest) {
                     closest = t;
-                    hit = true;  // 是否命中
                     hitEntity = target; // 世界坐标命中点
                     hitPoint = pos->position + dir * t; // 命中面的法线（±X / ±Y / ±Z）
-                    hitNormal = normal; 
+                    hitNormal = normal;
+                    //printf("嗯嗯嗯\n");
+                    if (hitEntity == kInvalidEntity) continue;
+                    bool leftClick  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
+                    bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+                    if (leftClick) {
+                        printf("消除了某方块\n");
+                        em.destroy(hitEntity);
+                    }
+                    if (rightClick) {
+                        Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
+                        em.build("grass_block", placePos);
+                        printf("创造某方块！！\n");
+                    }
                 }
             }
         }
+        // printf("嗯嗯嗯\n");
+        // if (hitEntity == kInvalidEntity) continue;
+        // bool leftClick  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
+        // bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+        // if (leftClick) {
+        //     printf("消除了某方块\n");
+        //     em.destroy(hitEntity);
+        // }
+        // if (rightClick) {
+        //     Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
+        //     em.build("grass_block", placePos);
+        //     printf("创造某方块！！\n");
+        // }
     }
 }
+//                     bool leftClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
+//                     if (leftClick && rc && hit) {
+//                         em.destroy(hitEntity);
+//                         printf("消除了某方块\n");
+//                     }
+//                     bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+//                     if (rightClick && rc && hit) {
+//                         Vec3 blockSize = {1.5f, 1.5f, 1.5f};
+//                         Vec3 hitBlockPos = em.get<Position>(hitEntity)->position;
+//                         Vec3 placePos = hitBlockPos + hitNormal * blockSize;
+//                         em.build("grass_block", placePos);
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 bool RaycastSystem::rayIntersectsAABB(const Vec3& origin, const Vec3& dir, const AABB& box,
         float maxDist, float& outT, Vec3& outNormal) {
     float tMin = 0.0f;

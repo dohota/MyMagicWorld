@@ -27,10 +27,6 @@ public:
 private:
     Entity nextEntity{1};
     // 每种组件类型一个容器
-            // std::unordered_map<
-            //     std::type_index,
-            //     std::unordered_map<Entity, std::shared_ptr<void>>
-            // > components;
     std::unordered_map<std::type_index, std::unique_ptr<Pool>> pools;
 
     // 最外层 unordered_map
