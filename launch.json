@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug MyWorld",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/MyWorld",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "preLaunchTask": "build"
+    }
+  ]
+}
