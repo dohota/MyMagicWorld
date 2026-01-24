@@ -24,13 +24,21 @@ vscode最左侧有debug的按钮，可以用来调试，设置断点等
 可以直接在控制台输入：/Users/karl/Documents/programming/c/FirstWorld/build/MyWorld来启动该游戏
 
 #### 目前项目设想
-ComponentPool 天然适合 SIMD / 性能优化
+a.ComponentPool 天然适合 SIMD / 性能优化
+1.选最小 pool：在所有 Ts... 的 component pool 中，选一个 entity 数量最少的 pool 作为外层循环
+如 view< Position, Velocity, Camera>() 应该先 遍历 Camera pool
+2 . AoS改为SoA：cache 命中 ✅ SIMD ✅ 线性访问 ✅
+3 . 去掉 unordered_map ，改为 dense type id （把组件类型映射成一个小整数），
+查找————O(1) 数组，cache	连续，可 bitmask
+4 . archetype = 组件集合的“形态”， 一个组件集合的签名：
+Entity 创建，组件集合确定 ，Entity 被放入某个 archetype chunk，System 只遍历自己关心的 archetype
 
-之前是多个系统执行发生冲突了。我把input- move-collision- render改为input- collision-move- render 后
+b. 不知道之后要不要把component manager与entity manager分离，但目前来看没必要
+c.之前是多个系统执行发生冲突了。我把input- move-collision- render改为input- collision-move- render 后
 碰撞系统里的函数大都能正常执行了，可是碰撞的画面还是没看到。所以我就把move合并进了collision系统
 （因为这两个系统同时都修改了position），之后不知道要不要再解耦合
-
-每个系统是不是就写成一个函数就行，这样也方便调度吧！因为system理论上不需要什么初始状态，或者说system manager可以帮忙管理其初始状态
+d.每个系统是不是就写成一个函数就行，这样也方便调度吧！因为system理论上不需要什么初始状态，或者说system manager可以帮忙管理其初始状态
+加上 scheduler，system dependency graph
 
 #### bug
 移动方向bug：摄像机没问题，但是人物wasd移动不能按照人物面朝的方向进行移动
@@ -42,19 +50,13 @@ ComponentPool 天然适合 SIMD / 性能优化
 #### v1.5.9
 感觉之前的段错误是 即时制事件队列导致的，所以现在新增了新的事件队列，在每一tick的末尾修改实体
 现在增加方块好像看不见了，删除方块能看到，但是删的太快了，位置也不对。而且event bus都没派上用处，像一个累赘
-
+#### v1.5.10
+现在增加方块，删除方块 的速度正常了
+但是它不是根据raycast视线来删除的（好像是根据固定顺序删除），增加方块也不可见，但是肯定是增加了
+#### v1.5.11
 
 
 
 双击空格 切换飞行模式和地面模式（跳跃/重力系统）
 实现简单的chunk加载与删除，无限地形
 编译期间将头文件里的数值赋值给变量，初始化组件在编译期间就完成
-🔥 继续：
-view<T...>() 选最小 pool（O(min)）
-SoA / SIMD MoveSystem
-🧠 进阶：
-去掉 unordered_map → dense type id
-archetype / chunk layout
-🎮 工程化：
-scheduler
-system dependency graph

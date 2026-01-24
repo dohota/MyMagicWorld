@@ -5,6 +5,7 @@
 RaycastSystem  :: RaycastSystem () {
     this->prior = 3;
     this->start();
+    
 }
 void RaycastSystem  :: start(){
     
@@ -49,13 +50,18 @@ void RaycastSystem::update(EntityManager& em, CommandBuffer& cv, EventBus& ev, f
             }
         }
         if (hitEntity == kInvalidEntity) continue;
-        bool leftClick  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
-        bool rightClick = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
-        if (leftClick) {
+        bool leftNow  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
+        bool rightNow = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+        bool leftPressed  = leftNow  && !this->lastLeft;
+        bool rightPressed = rightNow && !this->lastRight;
+        this->lastLeft  = leftNow;
+        this->lastRight = rightNow;
+        
+        if (leftPressed) {
             printf("消除了某方块\n");
             cv.entity_destroy(hitEntity);
         }
-        if (rightClick) {
+        if (rightPressed) {
             Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
             printf("创造某方块！！\n");
             cv.entity_build(placePos,"grass_block");

@@ -92,6 +92,8 @@ public:
 
 class RaycastSystem  {
 public:
+    bool lastLeft = false;
+    bool lastRight = false;
     int prior = 3;
     RaycastSystem (); //默认构造函数
     void start();
