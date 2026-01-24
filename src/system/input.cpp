@@ -7,6 +7,7 @@ InputSystem :: InputSystem() {
     this->prior = 1;
     this->spaceTimer = 0.0f;
     this->spaceCount = 0;
+    this->is_fly = false;
     this->start();
 }
 void InputSystem :: start(){
@@ -76,6 +77,7 @@ void InputSystem :: update(EntityManager& em, EventBus& ev, float dt)  {
             }
             spaceTimer = 0.0f; // 最后这些值要归零，所以说system是无状态的，之后可以封装计时器和计数器解决
             if (spaceCount == 2) {
+                this->is_fly = !this->is_fly;
                 ev.emit(FlyMode{});
                 spaceCount = 0;
             }

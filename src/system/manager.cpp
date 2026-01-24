@@ -1,22 +1,24 @@
 #include "../system/system.h"
 #include "../entity/entity.h"
-SystemManager :: SystemManager(EntityManager& em, EventBus& ev) {
+SystemManager :: SystemManager() {
     this->s1 = new InputSystem();
     this->s2 = new RaycastSystem();
     this->s3 = new RenderSystem();
     this->s4 = new CollisionSystem();
-    this->s5 = new EntitySystem(em, ev);
+    this->s5 = new EntitySystem();
     this->start();
 }
 void SystemManager :: start(){
     
 }
-void SystemManager :: update(EntityManager& em, EventBus& ev, float dt,SDL_Window* window)  {
+void SystemManager :: update(EntityManager& em, CommandBuffer& cv, EventBus& ev, float dt,SDL_Window* window)  {
     this->s1->update(em,ev,dt);
     this->s4->update(em,dt);
-    this->s2->update(em,ev,dt);
-    this->s5->update(em,ev,dt);
+    this->s2->update(em,cv,ev,dt);
+    
     this->s3->update(em,ev,window);
+    cv.flush(em);
+    //this->s5->update(em,cv,ev,dt);
 }
 SystemManager::~SystemManager(){
     delete this->s1;

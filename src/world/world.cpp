@@ -46,8 +46,9 @@ World :: World() {
     SDL_SetRelativeMouseMode(SDL_TRUE);//防止鼠标没反应
     SDL_ShowCursor(SDL_DISABLE);
     this->em = new EntityManager();
-    this->s = new SystemManager(*(this->em), *(this->ev));
+    this->s = new SystemManager();
     this->ev = new EventBus();
+    this->cv = new CommandBuffer();
 }
 void World :: start()  {
     this->em->build("player",{0,0,0});
@@ -68,16 +69,18 @@ void World :: start()  {
                 setupProjection(e.window.data1, e.window.data2);
             }
         }
-        this->s->update(*(this->em), *(this->ev), dt, this->window);
+        this->s->update(*(this->em), *(this->cv), *(this->ev), dt, this->window);
     }
 }
 World::~World(){
     delete this->s;
     delete this->em;
     delete this->ev;
+    delete this->cv;
     this->s = nullptr;
     this->em = nullptr;
     this->ev = nullptr;
+    this->cv = nullptr;
     SDL_GL_DeleteContext(this->context);
     SDL_DestroyWindow(window);
     SDL_Quit();

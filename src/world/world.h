@@ -18,4 +18,5 @@ private:
     SystemManager* s;
     EntityManager* em;
     EventBus* ev;
+    CommandBuffer* cv;
 };

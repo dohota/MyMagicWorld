@@ -5,6 +5,8 @@
 #include <functional>
 // 目前事件总线是即时派发的，不是队列式的
 // 如果之后需要，可以再写一个队列式的事件总线
+// EventBus 适合： 切换模式（飞行 / 行走），播放音效， UI 提示，粒子效果
+// 不适合：destroy / build， spawn entity， 改组件结构
 class EventBus {
 public:
     EventBus() = default;
@@ -30,9 +32,55 @@ private:
         return handlers;
     }
 };
+// 延迟执行的 写操作队列
+
+// Minecraft里 所有世界修改都发生在 tick 边界：20 TPS（每秒 20 tick）
+// 一个 tick 内：收集输入， 处理 AI / 物理 / 碰撞， 处理方块更新
+
+// 如果只是简单的意图/请求，可以用event bus。要修改世界，就得用CommandBuffer
+class CommandBuffer {
+public:
+    // put one kind of event into the event queue
+    void entity_destroy(Entity entity) {
+        this->destroyQueue.push_back({entity});
+    }
+    void entity_build(const Vec3& pos, const std::string& type) {
+        this->buildQueue.push_back({pos, type});
+    }
+    // tick 末尾统一提交世界修改
+    void flush(EntityManager& em) {
+        for (auto& a : destroyQueue){ // 执行队列里的内容
+            em.destroy(a.entity);
+        }
+        destroyQueue.clear();
+
+        for (auto& b : buildQueue){
+            em.build(b.type, b.pos);
+        }
+        buildQueue.clear();
+    }
+private:
+    // event
+    struct EntityDestroy {
+        Entity entity;
+    };
+    struct EntityBuild {
+        Vec3 pos;
+        std::string type;
+    };
+    struct ChangeStatus {
+        Entity entity;
+        std::string old_;
+        std::string new_;
+    };
+    // event queue
+    std::vector<EntityDestroy> destroyQueue;
+    std::vector<EntityBuild>  buildQueue;
+};
 
 class InputSystem  {
 public:
+    bool is_fly;
     int prior = 1; //是第几个运行的系统
     InputSystem(); //默认构造函数
     void start();
@@ -47,7 +95,7 @@ public:
     int prior = 3;
     RaycastSystem (); //默认构造函数
     void start();
-    void update(EntityManager& em, EventBus& ev, float dt);
+    void update(EntityManager& em, CommandBuffer& cv, EventBus& ev, float dt);
     ~RaycastSystem ();
 private:
     bool rayIntersectsAABB(
@@ -75,9 +123,9 @@ private:
 class EntitySystem{
 public:
     int prior = 4;
-    EntitySystem(EntityManager& em, EventBus& ev);
-    void start(EntityManager& em, EventBus& ev);
-    void update(EntityManager& em, EventBus& ev, float dt);
+    EntitySystem();
+    void start();
+    void update(EntityManager& em, CommandBuffer& cv, EventBus& ev, float dt);
     ~EntitySystem();
 };
 
@@ -98,9 +146,9 @@ private:
 
 class SystemManager  {
 public:
-    SystemManager(EntityManager& em, EventBus& ev); //默认构造函数
+    SystemManager(); //默认构造函数
     void start();
-    void update(EntityManager& em, EventBus& ev, float dt,SDL_Window* window);
+    void update(EntityManager& em,CommandBuffer& cv, EventBus& ev, float dt,SDL_Window* window);
     ~SystemManager();
 private:
     InputSystem*    s1 = nullptr;
@@ -123,13 +171,4 @@ struct FlyMode { // 双击空格
 struct Build { // 鼠标左键
 };
 struct Destroy { // 鼠标右键
-};
-
-struct EntityDestroy {
-    Entity entity;
-};
-
-struct EntityBuild {
-    Vec3 position;
-    std::string type;
 };
