@@ -45,27 +45,27 @@ void RaycastSystem::update(EntityManager& em, CommandBuffer& cv, EventBus& ev, f
                     hitEntity = target; // 世界坐标命中点
                     hitPoint = pos->position + dir * t; // 命中面的法线（±X / ±Y / ±Z）
                     hitNormal = normal;
+                    if (hitEntity == kInvalidEntity) continue;
+                    bool leftNow  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
+                    bool rightNow = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+                    bool leftPressed  = leftNow  && !this->lastLeft;
+                    bool rightPressed = rightNow && !this->lastRight;
+                    this->lastLeft  = leftNow;
+                    this->lastRight = rightNow;
                     
+                    if (leftPressed) {
+                        printf("消除了某方块\n");
+                        cv.entity_destroy(hitEntity);
+                    }
+                    if (rightPressed) {
+                        Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
+                        printf("创造某方块！！\n");
+                        cv.entity_build(placePos,"grass_block");
+                    }
                 }
             }
         }
-        if (hitEntity == kInvalidEntity) continue;
-        bool leftNow  = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
-        bool rightNow = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT);
-        bool leftPressed  = leftNow  && !this->lastLeft;
-        bool rightPressed = rightNow && !this->lastRight;
-        this->lastLeft  = leftNow;
-        this->lastRight = rightNow;
         
-        if (leftPressed) {
-            printf("消除了某方块\n");
-            cv.entity_destroy(hitEntity);
-        }
-        if (rightPressed) {
-            Vec3 placePos = em.get<Position>(hitEntity)->position + cross(hitNormal, Vec3{1.5f, 1.5f, 1.5f});
-            printf("创造某方块！！\n");
-            cv.entity_build(placePos,"grass_block");
-        }
     }
 }
 bool RaycastSystem::rayIntersectsAABB(const Vec3& origin, const Vec3& dir, const AABB& box,

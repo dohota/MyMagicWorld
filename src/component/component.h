@@ -78,6 +78,25 @@ struct IsFly {
 };
 struct IsSwim {
 };
+enum class MoveMode {
+    Ground,
+    Fly
+};
+
+enum class GroundState {
+    Grounded,
+    Jumping,
+    Falling
+};
+
+struct PlayerState {
+    MoveMode   mode = MoveMode::Ground;
+    GroundState ground = GroundState::Grounded;
+
+    float verticalSpeed = 0.0f;   // y 轴速度
+    bool  onGround = false;       // 碰撞系统告诉你
+};
+
 
 struct GroupPosition{
     
