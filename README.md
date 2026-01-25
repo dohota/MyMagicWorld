@@ -56,12 +56,14 @@ Scheduler（调度器）负责：找到“没有依赖”的 Job，分配到线�
 #### v1.6.0 : 
 用bgfx替代opengl，只改render system和world.cpp的代码就行了。bgfx类似opengl，但是流程更加现代化，可以参考其源代码中给的渲染范例
 要是感觉不行就再换用filament
+#### v1.6.1:
 
 
 
-v1.7.x : 加入openal声音库，基本只播放.ogg文件。ui用imgui。物理引擎等别的库按需引入
-v1.8.x : 合适的话可以加入网络模块（如entt，raknet，boost.asio）
-v1.9.x : 看情况，可以试试sdl3或者glfw，但性能也差不多了多少；还可以仿照minetest的代码！
+
+加入openal声音库，基本只播放.ogg文件。ui用imgui。物理引擎等别的库按需引入
+合适的话可以加入网络模块（如entt，raknet，boost.asio）
+#### 可以试试sdl3或者glfw，但性能也差不多了多少；仿照minetest的代码！
 未实现：
 双击空格 切换飞行模式和地面模式（跳跃/重力系统）
 实现简单的chunk加载与删除，无限地形
