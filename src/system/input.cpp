@@ -58,13 +58,29 @@ void InputSystem :: update(EntityManager& em, EventBus& ev, float dt)  {
             -cosf(yawRad)
         }; // 在“地面上往哪走”
         moveFront = normalize(moveFront);
-        Vec3 moveRight = normalize(cross(moveFront, Vec3{0,1,0}));
+        //Vec3 moveFront = normalize(Vec3{ camFront.x, 0.0f, camFront.z });--gemini3给的答案
+
+        //Vec3 moveRight = normalize(cross(Vec3{0,1,0},moveFront));
+        Vec3 moveRight = normalize(cross(moveFront, Vec3{0,1,0}));//在右手坐标系（OpenGL / MC / 你这个引擎）里是反着的！
         // ====== WASD ======
-        //vel->value = {0,0,0}; // 先清零
-        if (state[SDL_SCANCODE_W]) vel->value += moveFront * speed;
-        if (state[SDL_SCANCODE_S]) vel->value -= moveFront * speed;
-        if (state[SDL_SCANCODE_A]) vel->value -= moveRight * speed;
-        if (state[SDL_SCANCODE_D]) vel->value += moveRight * speed;
+        vel->value = {0,0,0}; // 先清零
+        Vec3 wishDir{0,0,0};
+        if (state[SDL_SCANCODE_W]) wishDir += moveFront;
+        if (state[SDL_SCANCODE_S]) wishDir -= moveFront;
+        if (state[SDL_SCANCODE_A]) wishDir -= moveRight;
+        if (state[SDL_SCANCODE_D]) wishDir += moveRight;
+        printf("forward = %.2f %.2f %.2f | right = %.2f %.2f %.2f\n",
+       moveFront.x, moveFront.y, moveFront.z,
+       moveRight.x, moveRight.y, moveRight.z);
+        //if (length(wishDir) > 0)
+        //    wishDir = normalize(wishDir); //阻止玩家“斜着跑更快”
+        vel->value.x = wishDir.x * speed;
+        vel->value.z = wishDir.z * speed;
+
+        // if (state[SDL_SCANCODE_W]) vel->value += moveFront * speed;
+        // if (state[SDL_SCANCODE_S]) vel->value -= moveFront * speed;
+        // if (state[SDL_SCANCODE_A]) vel->value -= moveRight * speed;
+        // if (state[SDL_SCANCODE_D]) vel->value += moveRight * speed;
         // ====== 上下移动 ======
         if (state[SDL_SCANCODE_SPACE]) vel->value.y += speed ;
         if (state[SDL_SCANCODE_LSHIFT]) vel->value.y -= speed ;

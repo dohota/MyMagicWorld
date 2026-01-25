@@ -53,20 +53,23 @@ Scheduler（调度器）负责：找到“没有依赖”的 Job，分配到线�
 方块系统还是有bug，先不管了
 ## mc Java版pre-Classic （north创造mc的第一周）：和我现在写的内容差不多
 ## Classic 初始版本：有较大地图，少量方块种类（都有材质纹理），只有飞行模式，选中方块有高亮，有简单的多人联机功能，简易ui
+#### v1.6.0 : 
+用bgfx替代opengl，只改render system和world.cpp的代码就行了。bgfx类似opengl，但是流程更加现代化，可以参考其源代码中给的渲染范例
+要是感觉不行就再换用filament
+
+
+
+v1.7.x : 加入openal声音库，基本只播放.ogg文件。ui用imgui。物理引擎等别的库按需引入
+v1.8.x : 合适的话可以加入网络模块（如entt，raknet，boost.asio）
+v1.9.x : 看情况，可以试试sdl3或者glfw，但性能也差不多了多少；还可以仿照minetest的代码！
 未实现：
 双击空格 切换飞行模式和地面模式（跳跃/重力系统）
 实现简单的chunk加载与删除，无限地形
 编译期间将头文件里的数值赋值给变量，初始化组件在编译期间就完成
+最好是等有了稳定的chunk系统了之后，再加入网络模块（像mc一样），并且内置一个内网穿透的工具
 
-## 项目架构：
-v 1.6 之前：只用了用sdl2+opengl
-v1.6.x : 用bgfx替代opengl，只改render system和world.cpp的代码就行了。bgfx类似opengl，但是流程更加现代化，可以参考其源代码中给的渲染范例
-要是感觉不行就再换用filament
-v1.7.x : 加入openal声音库，基本只播放.ogg文件。ui用imgui。物理引擎等别的库按需引入
-v1.8.x : 合适的话可以加入网络模块（如entt，raknet，boost.asio）
-v1.9.x : 看情况，可以试试sdl3或者glfw，但性能也差不多了多少；还可以仿照minetest的代码
-
-v 2.0.x：学习使用the forge，性能很好，适合3a大作。sokol库太简陋，暂时不需要用
+#### cworld_forge分支
+v 0.0.x：学习使用the forge，性能很好，适合3a大作，也支持全平台，包括游戏主机平台。sokol库太简陋，暂时不需要用
 the forge源代码以我的能力，不需要改了。the forge还依赖很多第三方库，那些库大都以二进制形式提供（已经编译好了的库）
 当然，the forge和其依赖的第三方库，如果有bug的话，还是需要跟原作者反应，在issue里提出
 我做游戏引擎/游戏的时候，需要把the forge的源代码和 游戏的源代码 放在一起编译，最后链接在一起
@@ -74,15 +77,18 @@ the forge源代码以我的能力，不需要改了。the forge还依赖很多�
 可以写cmake脚本编译二者，也可以用lua脚本什么的，
 等项目超过十万行更可以自制构建工具（自制构建工具还要有能在编译期报错的本领）
 
-v 2.1.x: 可以引入openal，和别的网络库。它们可以写在vcpkg.json里，也可以自己下载它们的二进制形式
+v 0.1.x: 可以引入openal，和别的网络库。它们可以写在vcpkg.json里，也可以自己下载它们的二进制形式
+the forge本身的声音库只有薄薄的一层，网络库更是基本没有
+the forge的教程比较少，但可以去discord上找。最好的教程就是阅读其源代码，因为这个库是给工程师用的
+The Forge 的重心是：GPU / CPU / 内存 / 多线程 / 跨平台，别的就自己实现/引入第三方库。the forge很克制的使用std标准库，但不像ue那样完全不用
 ## 文件夹规范：
 build：cmake/vcpkg自动构建的，编译产物，中间文件 
-src：主要的源代码
+src：主要的游戏源代码：分引擎（纯客户端），游戏本体（客户端+服务端）
 test：单元测试，各种测试，如cmake的ctest
 docs（用md文件不要用二进制文件）：设计文档，架构说明，API 文档，教程。可以与wiki里的内容互相配合 
 .github：GitHub 自动识别的配置目录————控制 CI、Issue 模板、PR 模板 
 assets：各种声音，贴图等 
-tools：内部工具，转换器，打包器。可以放入自己的构建工具
+tools：内部工具，转换器，打包器。可以放入自己的构建工具和自己的版本控制工具
 examples：示例 
 lib：第三方库，预编译库，子模块 ——————————可以放the forge的源代码
 include（C/C++ 常见）：公共头文件，对外 API 
