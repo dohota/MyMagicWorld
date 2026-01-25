@@ -53,22 +53,31 @@ Scheduler（调度器）负责：找到“没有依赖”的 Job，分配到线�
 方块系统还是有bug，先不管了
 ## mc Java版pre-Classic （north创造mc的第一周）：和我现在写的内容差不多
 ## Classic 初始版本：有较大地图，少量方块种类（都有材质纹理），只有飞行模式，选中方块有高亮，有简单的多人联机功能，简易ui
-#### v1.6.0 : 
+#### v1.6.0: 
 用bgfx替代opengl，只改render system和world.cpp的代码就行了。bgfx类似opengl，但是流程更加现代化，可以参考其源代码中给的渲染范例
-要是感觉不行就再换用filament
+要是感觉不行就再换用filament。加入openal声音库，基本只播放.ogg文件
 #### v1.6.1:
+配置官方vcpkg：cd ~
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
+export VCPKG_ROOT=$PWD
+这样才能下载bgfx。之前成功下载sdl2是因为sdl2比较简单搞，而bgfx依赖比较多
+
+只修改了render.cpp和world.cpp，其他修改的都是头文件，和一些必要的文件
+现在运行程序，完全是黑屏
 
 
 
 
-加入openal声音库，基本只播放.ogg文件。ui用imgui。物理引擎等别的库按需引入
-合适的话可以加入网络模块（如entt，raknet，boost.asio）
-#### 可以试试sdl3或者glfw，但性能也差不多了多少；仿照minetest的代码！
-未实现：
+#### 未实现：
+可以试试sdl3或者glfw，但性能也差不多了多少；仿照minetest的代码！
+
 双击空格 切换飞行模式和地面模式（跳跃/重力系统）
 实现简单的chunk加载与删除，无限地形
 编译期间将头文件里的数值赋值给变量，初始化组件在编译期间就完成
-最好是等有了稳定的chunk系统了之后，再加入网络模块（像mc一样），并且内置一个内网穿透的工具
+ui用imgui。物理引擎等别的库按需引入
+最好是等有了稳定的chunk系统了之后，再加入网络模块（像mc一样,但是这里可用entt，raknet，boost.asio等），并且内置一个内网穿透的工具
 
 #### cworld_forge分支
 v 0.0.x：学习使用the forge，性能很好，适合3a大作，也支持全平台，包括游戏主机平台。sokol库太简陋，暂时不需要用

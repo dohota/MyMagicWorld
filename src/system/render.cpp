@@ -1,9 +1,6 @@
 #include "../system/system.h"
 #include "../component/component.h"
 #include "../utils/math.h"
-#include <SDL_opengl.h> // macOS 上直接用这个
-//#include <iostream>
-
 //SDL2 + OpenGL 旧式（Immediate Mode）
 // OpenGL 本身是一个渲染管线，它不会自己存储场景里物体的位置或逻辑关系，它只知道你给它 顶点坐标 和 变换矩阵
 // 为了方便处理场景，你通常会把场景中的物体放到一个 统一坐标系 中，这就是 世界坐标系 (World Space)
@@ -15,133 +12,78 @@
 // 模型矩阵 = 把物体放到地图上的位置
 // 视图矩阵 = 摄像机站在哪看地
 // 投影矩阵 = 摄像机镜头把 3D 映射成 2D
+struct PosColorVertex {
+        float x, y, z;
+        uint32_t abgr;
+        static bgfx::VertexLayout ms_decl;
+    };
+bgfx::VertexLayout PosColorVertex::ms_decl;
+
 void RenderSystem :: drawCrosshair(int screenWidth, int screenHeight, float size, float thickness) {
-    // 保存矩阵状态
-    glPushMatrix();
-    
-    // 使用正交投影，让坐标就是屏幕像素
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
+    float cx = screenWidth/2.0f;
+    float cy = screenHeight/2.0f;
+    PosColorVertex crosshair[4] = {
+        {cx-size, cy, 0.0f, 0xffffffff},
+        {cx+size, cy, 0.0f, 0xffffffff},
+        {cx, cy-size, 0.0f, 0xffffffff},
+        {cx, cy+size, 0.0f, 0xffffffff}
+    };
+    float ortho[16];
+    bx::mtxOrtho(ortho, 0.0f, float(screenWidth), 0.0f, float(screenHeight), -1.0f, 1.0f, 0.0f, bgfx::getCaps()->homogeneousDepth);
+    bgfx::setTransform(ortho);
 
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    // 设置颜色
-    glColor3f(1.0f, 1.0f, 1.0f); // 白色
-
-    // 屏幕中心
-    float cx = screenWidth  / 2.0f;
-    float cy = screenHeight / 2.0f;
-
-    glLineWidth(thickness);
-    glBegin(GL_LINES);
-        // 水平线
-        glVertex2f(cx - size, cy);
-        glVertex2f(cx + size, cy);
-        // 垂直线
-        glVertex2f(cx, cy - size);
-        glVertex2f(cx, cy + size);
-    glEnd();
-
-    // 恢复矩阵
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-}
-void RenderSystem :: drawCube(float x, float y, float z, float s) {
-    // --- 绘制面片 ---
-    glEnable(GL_POLYGON_OFFSET_FILL);      // 开启深度偏移
-    glPolygonOffset(1.0f, 1.0f);          // 防止线条 z-fighting
-    glBegin(GL_QUADS);
-    
-    // 所有面颜色统一为绿色
-    glColor3f(0.3f, 0.8f, 0.3f);
-
-    // 前面 (z+s)
-    glVertex3f(x,   y,   z+s);
-    glVertex3f(x+s, y,   z+s);
-    glVertex3f(x+s, y+s, z+s);
-    glVertex3f(x,   y+s, z+s);
-
-    // 后面 (z)
-    glVertex3f(x,   y,   z);
-    glVertex3f(x+s, y,   z);
-    glVertex3f(x+s, y+s, z);
-    glVertex3f(x,   y+s, z);
-
-    // 左面 (x)
-    glVertex3f(x, y,   z);
-    glVertex3f(x, y,   z+s);
-    glVertex3f(x, y+s, z+s);
-    glVertex3f(x, y+s, z);
-
-    // 右面 (x+s)
-    glVertex3f(x+s, y,   z);
-    glVertex3f(x+s, y,   z+s);
-    glVertex3f(x+s, y+s, z+s);
-    glVertex3f(x+s, y+s, z);
-
-    // 上面 (y+s)
-    glVertex3f(x,   y+s, z);
-    glVertex3f(x+s, y+s, z);
-    glVertex3f(x+s, y+s, z+s);
-    glVertex3f(x,   y+s, z+s);
-
-    // 下面 (y)
-    glVertex3f(x,   y, z);
-    glVertex3f(x+s, y, z);
-    glVertex3f(x+s, y, z+s);
-    glVertex3f(x,   y, z+s);
-
-    glEnd(); // cannot delete this
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    // --- 绘制边框 ---
-    glColor3f(0.0f, 0.0f, 0.0f); // 黑色边框
-    glLineWidth(1.0f);
-    glBegin(GL_LINES);
-
-    // 八个顶点
-    float x0 = x,   y0 = y,   z0 = z;
-    float x1 = x+s, y1 = y+s, z1 = z+s;
-
-    // 前面边
-    glVertex3f(x0, y0, z1); glVertex3f(x1, y0, z1);
-    glVertex3f(x1, y0, z1); glVertex3f(x1, y1, z1);
-    glVertex3f(x1, y1, z1); glVertex3f(x0, y1, z1);
-    glVertex3f(x0, y1, z1); glVertex3f(x0, y0, z1);
-
-    // 后面边
-    glVertex3f(x0, y0, z0); glVertex3f(x1, y0, z0);
-    glVertex3f(x1, y0, z0); glVertex3f(x1, y1, z0);
-    glVertex3f(x1, y1, z0); glVertex3f(x0, y1, z0);
-    glVertex3f(x0, y1, z0); glVertex3f(x0, y0, z0);
-
-    // 连接前后顶点
-    glVertex3f(x0, y0, z0); glVertex3f(x0, y0, z1);
-    glVertex3f(x1, y0, z0); glVertex3f(x1, y0, z1);
-    glVertex3f(x1, y1, z0); glVertex3f(x1, y1, z1);
-    glVertex3f(x0, y1, z0); glVertex3f(x0, y1, z1);
-
-    glEnd();
+    bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(
+        bgfx::makeRef(crosshair, sizeof(crosshair)),
+        PosColorVertex::ms_decl
+    );
+    bgfx::setVertexBuffer(0, vbh);
+    bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_PT_LINES); // 线条模式
+    bgfx::submit(1, BGFX_INVALID_HANDLE);
 }
 
-void RenderSystem :: gluPerspective(float fov, float aspect, float zNear, float zFar) {
-    float f = 1.0f / tanf(fov * 0.5f * 3.1415926f / 180.0f);
-
-    float m[16] = {
-        f / aspect, 0, 0,  0,
-        0, f, 0,  0,
-        0, 0, (zFar+zNear)/(zNear-zFar), -1,
-        0, 0, (2*zFar*zNear)/(zNear-zFar), 0
+void RenderSystem :: drawCube(float x, float y, float z, float s, const float viewProj[16]) {
+    // --- 顶点 ---
+    PosColorVertex cubeVertices[8] = {
+        {x,       y,       z,       0xff33cc33},
+        {x+s,     y,       z,       0xff33cc33},
+        {x+s,     y+s,     z,       0xff33cc33},
+        {x,       y+s,     z,       0xff33cc33},
+        {x,       y,       z+s,     0xff33cc33},
+        {x+s,     y,       z+s,     0xff33cc33},
+        {x+s,     y+s,     z+s,     0xff33cc33},
+        {x,       y+s,     z+s,     0xff33cc33},
     };
 
-    glMultMatrixf(m);
+    uint16_t cubeIndices[36] = {
+        0,1,2, 0,2,3,
+        4,5,6, 4,6,7,
+        0,4,7, 0,7,3,
+        1,5,6, 1,6,2,
+        3,2,6, 3,6,7,
+        0,1,5, 0,5,4
+    };
+
+    // --- bgfx 缓冲 ---
+    bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(
+        bgfx::makeRef(cubeVertices, sizeof(cubeVertices)),
+        PosColorVertex::ms_decl
+    );
+    bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(
+        bgfx::makeRef(cubeIndices, sizeof(cubeIndices))
+    );
+
+    // 模型矩阵（单位矩阵，因为顶点已在世界坐标）
+    float model[16];
+    bx::mtxIdentity(model);
+
+    float mvp[16];
+    bx::mtxMul(mvp, viewProj, model);
+
+    bgfx::setTransform(mvp);
+    bgfx::setVertexBuffer(0, vbh);
+    bgfx::setIndexBuffer(ibh);
+    bgfx::setState(BGFX_STATE_DEFAULT); // 默认状态即可
+    bgfx::submit(0, BGFX_INVALID_HANDLE);
 }
 
 RenderSystem :: RenderSystem() {
@@ -149,26 +91,25 @@ RenderSystem :: RenderSystem() {
     this->start();
 }
 void RenderSystem :: start(){
-    
+    PosColorVertex::ms_decl
+    .begin()
+    .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+    .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
+    .end();
 }
 void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)  {
-    glEnable(GL_DEPTH_TEST);
     int w, h;
     SDL_GetWindowSize(window, &w, &h);
-    glViewport(0, 0, w, h);
-
-    glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//颜色缓冲区（Framebuffer）清空
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(70.0, (float)w / h, 0.1, 100.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity(); //把当前矩阵重置为“单位矩阵”
-    //glTranslatef(0, 0, -15);//把整个世界移动 便于观察
-    drawCrosshair(w, h, 10.0f, 2.0f); // draw crossing
-
+    bgfx::reset(800, 600, BGFX_RESET_VSYNC);
+    bgfx::setViewClear( // 清屏
+        0,
+        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+        0x87CEEBFF, // 天空蓝
+        1.0f,
+        0
+    );
+    bgfx::setViewRect(0, 0, 0, 800, 600);
+    
     Entity camEntity = 0;
     Position* camPos = nullptr;
     Camera* cam = nullptr;
@@ -179,31 +120,39 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
         break; // 只取一个camera
     }
     if (!cam || !camPos) return;
-
     // 用 yaw / pitch 计算方向
     float yawRad   = cam->yaw   * M_PI / 180.f;
     float pitchRad = cam->pitch * M_PI / 180.f;
-
-    Vec3 front{
+    bx::Vec3 front{
         cosf(pitchRad) * sinf(yawRad),
         sinf(pitchRad),
         -cosf(pitchRad) * cosf(yawRad)
     };
     front = normalize(front);
-    Vec3 right = normalize(cross(front, Vec3{0,1,0}));
-    Vec3 up    = cross(right, front);
-    Vec3 target = camPos->position + front;
+    bx::Vec3 right = normalize(cross(front, bx::Vec3{0,1,0}));
+    bx::Vec3 up    = cross(right, front);
+    //bx::Vec3 target = camPos->position + front;
     // 视锥剔除参数（简化版）
     float fov = 70.0f * M_PI / 180.0f; // 垂直视角弧度
     float aspect = (float)w / h;
     float nearPlane = 0.1f;
     float farPlane  = 100.0f;
     float tanHalfFOV = tanf(fov / 2.0f);
-    //OpenGL 是 右乘矩阵，实际执行顺序是反过来的：先 yaw再 pitch 再 translate!!
-    glRotatef(-cam->pitch, 1, 0, 0); // 绕局部 X
-    glRotatef(-cam->yaw,   0, 1, 0); // 绕世界 Y
-    glTranslatef(-camPos->position.x, -camPos->position.y, -camPos->position.z);   
-    
+    // View 矩阵
+    float view[16];
+    bx::Vec3 eye(camPos->position.x, camPos->position.y, camPos->position.z);
+    bx::Vec3 center(camPos->position.x + front.x, camPos->position.y + front.y, camPos->position.z + front.z);
+    bx::Vec3 upVec(up.x, up.y, up.z);
+    bx::mtxLookAt(view, eye, center, upVec); // 这里只支持bx::Vec3
+
+    // Projection 矩阵
+    float proj[16];
+    bx::mtxProj(proj, 70.0f, float(w)/float(h), 0.1f, 100.0f,
+                bgfx::getCaps()->homogeneousDepth);
+    float viewProj[16];
+    bx::mtxMul(viewProj, proj, view); 
+    drawCrosshair(w, h, 10.0f, 2.0f);
+
     for (Entity e : em.view<Position>()) {
         //if (e == camEntity) continue; // 剔除摄像机自身
         if (camPos && em.get<Position>(e) == camPos) continue; //玩家的位置不能当作方块渲染
@@ -211,21 +160,22 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
         auto* s = em.get<Size>(e);
         auto* coll = em.get<Collider>(e);
         if (!pos || !s || !coll) continue;
+        drawCube(pos->position.x, pos->position.y, pos->position.z, s->value.x, viewProj);
+        
         // 构造方块 AABB
         // AABB box = coll->box; // 如果 coll->box 是世界坐标就直接用
         // if (!isAABBVisible(camPos->position, front, up, 70.f, 
         //     (float)w/h, 0.1f, 100.f, box))
         //     continue; // 剔除不可见
-        drawCube(pos->position.x,pos->position.y,pos->position.z,s->value.x);
     }
-    SDL_GL_SwapWindow(window);
+    // 在 bgfx 里，每个渲染操作都绑定到一个 view，viewId = 0 通常是默认主视图
+    //bgfx::touch(0); 
+    // / 告诉 bgfx：“这个视图（view）这帧依然有效”，“即使我没往里面提交任何 draw call，
+    // 也要清理/执行这个 view 的状态（clear, stencil, etc.）
+    // 如果你每帧都提交 draw call，通常不必 touch。touch 主要用于空 view 也要清理的情况
+    bgfx::frame();
 }
-// 🔥 真正的摄像机
-// gluLookAt(
-//     camPos->position.x, camPos->position.y, camPos->position.z,
-//     target.x,           target.y,           target.z,
-//     up.x,               up.y,               up.z
-// );
+
 
 bool RenderSystem::isAABBVisible(const Vec3& camPos, const Vec3& camFront, const Vec3& camUp,
                    float fov, float aspect, float nearDist, float farDist, const AABB& box) {

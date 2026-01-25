@@ -3,6 +3,12 @@
 #include "../entity/entity.h"
 #include "../component/component.h"
 #include <functional>
+#include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
+#include <bx/bx.h>
+#include <bx/math.h>
+#include <SDL2/SDL_syswm.h>
+
 // 目前事件总线是即时派发的，不是队列式的
 // 如果之后需要，可以再写一个队列式的事件总线
 // EventBus 适合： 切换模式（飞行 / 行走），播放音效， UI 提示，粒子效果
@@ -139,11 +145,11 @@ public:
     void update(EntityManager& em, EventBus& ev, SDL_Window* window);
     ~RenderSystem();
 private:
-    void drawCube(float x, float y, float z, float s);
-    void gluPerspective(float fov, float aspect, float zNear, float zFar);
+    void drawCube(float x, float y, float z, float s, const float viewProj[16]);
     void drawCrosshair(int screenWidth, int screenHeight, float size = 10.0f, float thickness = 1.0f); // 十字准星
     bool isAABBVisible(const Vec3& camPos, const Vec3& camFront, const Vec3& camUp,
                    float fov, float aspect, float nearDist, float farDist, const AABB& box);
+    
 };
 
 class SystemManager  {
@@ -167,7 +173,7 @@ public:
     void update(float dt) { for (auto& s : systems) s(dt); }
 };
 
-// 事件总线中的事件
+// event bus中的事件
 struct FlyMode { // 双击空格
 };
 struct Build { // 鼠标左键
