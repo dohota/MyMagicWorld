@@ -66,32 +66,18 @@ export VCPKG_ROOT=$PWD
 
 只修改了render.cpp和world.cpp，其他修改的都是头文件，和一些必要的文件
 现在运行程序，完全是黑屏
-#### v1.6.2:
+#### v1.6.2 b:
+bgfx在m4的macbook上二进制文件有点问题，链接出了问题，因为我是vcpkg自动下载的bgfx
+所以暂时我准备放弃bgfx了，以后有机会再把bgfx拉下来，自行编译成静态库吧
+还是用the forge吧，哪怕很困难也要坚持，因为这是最能实现我理想的路，也能学会很多计算机知识
 
-
-
-#### 未实现：
+未实现：
 可以试试sdl3或者glfw，但性能也差不多了多少；仿照minetest的代码！
-
 双击空格 切换飞行模式和地面模式（跳跃/重力系统）
 实现简单的chunk加载与删除，无限地形
 编译期间将头文件里的数值赋值给变量，初始化组件在编译期间就完成
 ui用imgui。物理引擎等别的库按需引入
 最好是等有了稳定的chunk系统了之后，再加入网络模块（像mc一样,但是这里可用entt，raknet，boost.asio等），并且内置一个内网穿透的工具
-
-#### cworld_forge分支
-v 0.0.x：学习使用the forge，性能很好，适合3a大作，也支持全平台，包括游戏主机平台。sokol库太简陋，暂时不需要用
-the forge源代码以我的能力，不需要改了。the forge还依赖很多第三方库，那些库大都以二进制形式提供（已经编译好了的库）
-当然，the forge和其依赖的第三方库，如果有bug的话，还是需要跟原作者反应，在issue里提出
-我做游戏引擎/游戏的时候，需要把the forge的源代码和 游戏的源代码 放在一起编译，最后链接在一起
-/theforge：放forge源代码（编译为被调用的静态库），/src放我游戏的源代码（最后编译为可执行文件）
-可以写cmake脚本编译二者，也可以用lua脚本什么的，
-等项目超过十万行更可以自制构建工具（自制构建工具还要有能在编译期报错的本领）
-
-v 0.1.x: 可以引入openal，和别的网络库。它们可以写在vcpkg.json里，也可以自己下载它们的二进制形式
-the forge本身的声音库只有薄薄的一层，网络库更是基本没有
-the forge的教程比较少，但可以去discord上找。最好的教程就是阅读其源代码，因为这个库是给工程师用的
-The Forge 的重心是：GPU / CPU / 内存 / 多线程 / 跨平台，别的就自己实现/引入第三方库。the forge很克制的使用std标准库，但不像ue那样完全不用
 ## 文件夹规范：
 build：cmake/vcpkg自动构建的，编译产物，中间文件 
 src：主要的游戏源代码：分引擎（纯客户端），游戏本体（客户端+服务端）
@@ -105,3 +91,79 @@ lib：第三方库，预编译库，子模块 ——————————可�
 include（C/C++ 常见）：公共头文件，对外 API 
 scripts：构建脚本，自动化脚本，工具脚本 
 config：配置文件，如JSON / YAML / TOML，可以用.hpp配置 初始化组件
+
+## cworld_forge分支
+the forge性能很好，适合3a大作，也支持全平台，包括游戏主机平台。与其相比，sokol库就太简陋了，暂时不需要用
+v 2.0.0：
+#### 1.
+先把源代码拉下来（官方 GitHub，含 submodules）：其源代码以我的能力，不需要改了
+git clone --recursive https://github.com/ConfettiFX/The-Forge.git
+--recursive 是 Git 的一个参数，用来同时克隆仓库里的 submodule （很多第三方库，大都以二进制形式提供）
+### 当然，the forge和其依赖的第三方库，如果有bug的话，还是需要跟原作者反应，在issue里提出
+#### 2.
+在 The Forge 根目录创建 build 文件夹：mkdir Build && cd Build
+调用 CMake 生成 Ninja 构建文件：
+cmake ../Examples_3/HelloWorld  \
+  -G Ninja \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_OSX_ARCHITECTURES=arm64 \
+  -DCMAKE_BUILD_TYPE=Debug
+
+-G Ninja → 使用 Ninja 构建（VSCode 支持 CMake + Ninja）
+-DCMAKE_OSX_ARCHITECTURES=arm64 → Apple Silicon 原生
+-DCMAKE_BUILD_TYPE=Debug → 开发阶段方便 debug
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON → VSCode 可以解析 IntelliSense
+The Forge 默认会自动选择 Metal backend，不需要额外设置
+#### 2.--编译为静态库--
+cmake ../Examples_3/HelloWorld  \
+  -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_OSX_ARCHITECTURES=arm64 \
+  -DBUILD_SHARED_LIBS=OFF
+解释：
+
+-G Ninja → 用 Ninja 构建
+
+-DCMAKE_BUILD_TYPE=Release → 发布版本
+
+-DCMAKE_OSX_ARCHITECTURES=arm64 → Apple Silicon 原生
+
+-DBUILD_SHARED_LIBS=OFF → 生成静态库 .a，而不是动态库 .dylib
+
+注意：The Forge 的 CMake 会根据示例/target 自动生成静态库目标，比如 HelloWorld 会编成 libHelloWorld.a
+#### 3.
+选择一个最小示例，比如 Examples_3/HelloWorld：cmake --build . --target HelloWorld
+或者直接用 Ninja：ninja HelloWorld
+如果编译成功，你会得到可执行文件：Build/bin/HelloWorld.app/Contents/MacOS/HelloWorld
+#### 3.---编译为静态库之后
+ninja
+Build/bin/   # 可执行文件
+Build/lib/   # 静态库 .a 文件
+Build/include/ # 头文件
+如果你只想生成静态库，不需要编译示例，可以修改 CMake 目标，或者直接只构建 TheForgeLib（部分版本 CMake 会有 TheForge 目标
+#### 4.
+最好把the forge代码编译为静态库，放入/theforge文件夹，/src放我游戏的源代码
+将二者放在一起编译，最后链接在一起，即为可执行文件
+上述编译用cmake脚本，或lua，或自制构建工具（项目若超过十万行）。自制构建工具需要有能在编译期报错的本领
+#### 4.---使用静态库
+MyGame/ThirdParty/TheForge/lib/libTheForge.a
+MyGame/ThirdParty/TheForge/include/...   # 必须保留
+链接：
+clang++ main.cpp -IThirdParty/TheForge/include \
+    ThirdParty/TheForge/lib/libTheForge.a \
+    -framework Metal -framework Cocoa -framework Foundation -o MyGame
+shader / resource 文件：
+如果你的渲染需要热加载 shader，需要保留 .metal 文件
+如果 shader 预编译成 .metallib，只需拷 .metallib
+#### 注意
+好像用cmake构建the forge很难，而且the forge官方没有用cmake
+我在Windows11上用紫色的vs试着编译了一下，结果显示windows sdk不匹配
+#### The-Forge-Lite
+https://github.com/boberfly/The-Forge-Lite?utm_source=chatgpt.com
+也可以试试这个精简版的the forge，少了一些第三方库，gpu渲染方面不比原版差，cpu内存性能需要自己实现优化（如异步加载什么的）
+总的来说，如果专门为超大型mc而优化，那性能甚至可以比原版the forge还要好
+#### v 2.1.x: 
+可以引入openal，和别的网络库。它们可以写在vcpkg.json里，也可以自己下载它们的二进制形式
+the forge本身的声音库只有薄薄的一层，网络库更是基本没有
+the forge的教程比较少，但可以去discord上找。最好的教程就是阅读其源代码，因为这个库是给工程师用的
+The Forge 的重心是：GPU / CPU / 内存 / 多线程 / 跨平台，别的就自己实现/引入第三方库。the forge很克制的使用std标准库，但不像ue那样完全不用
