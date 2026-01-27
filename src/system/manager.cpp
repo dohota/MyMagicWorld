@@ -1,9 +1,9 @@
 #include "../system/system.h"
 #include "../entity/entity.h"
-SystemManager :: SystemManager() {
+SystemManager :: SystemManager(SDL_Window* window) {
     this->s1 = new InputSystem();
     this->s2 = new RaycastSystem();
-    this->s3 = new RenderSystem();
+    this->s3 = new RenderSystem(window);
     this->s4 = new CollisionSystem();
     this->s5 = new EntitySystem();
     this->start();
@@ -11,12 +11,12 @@ SystemManager :: SystemManager() {
 void SystemManager :: start(){
     
 }
-void SystemManager :: update(EntityManager& em, CommandBuffer& cv, EventBus& ev, float dt,SDL_Window* window)  {
+void SystemManager :: update(EntityManager& em, CommandBuffer& cv, EventBus& ev, float dt)  {
     this->s1->update(em,ev,dt);
     this->s4->update(em,dt);
     this->s2->update(em,cv,ev,dt);
     
-    this->s3->update(em,ev,window);
+    this->s3->update(em,ev);
     cv.flush(em);
     //this->s5->update(em,cv,ev,dt);
 }

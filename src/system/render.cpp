@@ -12,6 +12,15 @@
 // 模型矩阵 = 把物体放到地图上的位置
 // 视图矩阵 = 摄像机站在哪看地
 // 投影矩阵 = 摄像机镜头把 3D 映射成 2D
+
+// 现在换成bgfx了：
+// 每帧 bgfx::setViewTransform(0, view, proj)
+
+//  setTransform() 只传 model
+
+//  vertex shader 使用 u_modelViewProj
+
+//  submit(viewId, program) 的 viewId = 你 setView 的那个（0）
 struct PosColorVertex {
         float x, y, z;
         uint32_t abgr;
@@ -29,7 +38,8 @@ void RenderSystem :: drawCrosshair(int screenWidth, int screenHeight, float size
         {cx, cy+size, 0.0f, 0xffffffff}
     };
     float ortho[16];
-    bx::mtxOrtho(ortho, 0.0f, float(screenWidth), 0.0f, float(screenHeight), -1.0f, 1.0f, 0.0f, bgfx::getCaps()->homogeneousDepth);
+    bx::mtxOrtho(ortho, 0.0f, float(screenWidth), 0.0f, float(screenHeight),
+     -1.0f, 1.0f, 0.0f, bgfx::getCaps()->homogeneousDepth);
     bgfx::setTransform(ortho);
 
     bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(
@@ -38,10 +48,11 @@ void RenderSystem :: drawCrosshair(int screenWidth, int screenHeight, float size
     );
     bgfx::setVertexBuffer(0, vbh);
     bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_PT_LINES); // 线条模式
-    bgfx::submit(1, BGFX_INVALID_HANDLE);
+
+    bgfx::submit(0, defaultProgram);
 }
 
-void RenderSystem :: drawCube(float x, float y, float z, float s, const float viewProj[16]) {
+void RenderSystem :: drawCube(float x, float y, float z, float s) {
     // --- 顶点 ---
     PosColorVertex cubeVertices[8] = {
         {x,       y,       z,       0xff33cc33},
@@ -71,36 +82,124 @@ void RenderSystem :: drawCube(float x, float y, float z, float s, const float vi
     bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(
         bgfx::makeRef(cubeIndices, sizeof(cubeIndices))
     );
-
-    // 模型矩阵（单位矩阵，因为顶点已在世界坐标）
-    float model[16];
-    bx::mtxIdentity(model);
-
-    float mvp[16];
-    bx::mtxMul(mvp, viewProj, model);
-
-    bgfx::setTransform(mvp);
+    
     bgfx::setVertexBuffer(0, vbh);
     bgfx::setIndexBuffer(ibh);
     bgfx::setState(BGFX_STATE_DEFAULT); // 默认状态即可
-    bgfx::submit(0, BGFX_INVALID_HANDLE);
+    bgfx::submit(0, defaultProgram);
+}
+inline bgfx::ShaderHandle loadShader(const char* path) {
+    FILE* file = fopen(path, "rb");
+    if (!file) return BGFX_INVALID_HANDLE;
+    fseek(file, 0, SEEK_END);
+    size_t size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char* data = new char[size];
+    fread(data, 1, size, file);
+    fclose(file);
+
+    bgfx::ShaderHandle handle = bgfx::createShader(bgfx::makeRef(data, size));
+    delete[] data;
+    return handle;
+}
+inline void setupBgfxPlatformData(SDL_Window* window, bgfx::PlatformData& pd) {
+    memset(&pd, 0, sizeof(pd));
+
+    SDL_SysWMinfo wmi;
+    SDL_VERSION(&wmi.version);
+
+    if (!SDL_GetWindowWMInfo(window, &wmi))
+    {
+        SDL_Log("SDL_GetWindowWMInfo failed: %s", SDL_GetError());
+        return;
+    }
+
+#if defined(_WIN32)
+    pd.nwh = wmi.info.win.window;
+
+#elif defined(__APPLE__)
+    // macOS + Metal（最稳）
+    pd.nwh = SDL_Metal_CreateView(window);
+    pd.ndt = nullptr;
+
+#elif defined(__linux__)
+    pd.ndt = wmi.info.x11.display;
+    pd.nwh = (void*)(uintptr_t)wmi.info.x11.window;
+#endif
 }
 
-RenderSystem :: RenderSystem() {
+RenderSystem :: RenderSystem(SDL_Window* window) {
     this->prior = 3;
+    this->window = window;
+
+    bgfx::PlatformData pd;
+    setupBgfxPlatformData(this->window, pd);
+    bgfx::setPlatformData(pd);
+
+    bgfx::Init init{};
+    init.resolution.width  = 800;
+    init.resolution.height = 600;
+    init.resolution.reset  = BGFX_RESET_VSYNC;
+    
+#if defined(_WIN32)
+    init.type = bgfx::RendererType::Count;
+    SDL_SysWMinfo wmi;
+    SDL_VERSION(&wmi.version);
+    if (!SDL_GetWindowWMInfo(this->window, &wmi)) {
+        SDL_Log("SDL_GetWindowWMInfo failed: %s", SDL_GetError());
+        return;
+    }
+    init.platformData.nwh = wmi.info.win.window;
+#elif defined(__APPLE__)
+    init.type = bgfx::RendererType::Metal; // 强制metal
+    init.platformData.nwh = SDL_Metal_CreateView(this->window);
+    init.platformData.ndt = nullptr;
+#elif defined(__linux__)
+    init.type = bgfx::RendererType::Count;   
+    SDL_SysWMinfo wmi;
+    SDL_VERSION(&wmi.version);
+    if (!SDL_GetWindowWMInfo(this->window, &wmi)) {
+        SDL_Log("SDL_GetWindowWMInfo failed: %s", SDL_GetError());
+        return;
+    }
+    init.platformData.nwh = (void*)wmi.info.x11.window;
+#endif
+    SDL_PumpEvents();// 关键：先 pump 一次事件，让 Cocoa RunLoop 跑起来
+    if (!bgfx::init(init)) {
+        SDL_Log("bgfx init failed");
+        return;
+    }
+    
+    bgfx::renderFrame(); // 初始化后第一帧前要调用一次，否则在某些平台上会卡死或黑屏（bgfx 文档里的老坑了）
     this->start();
 }
 void RenderSystem :: start(){
+    // 顶点声明
     PosColorVertex::ms_decl
     .begin()
     .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
     .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
     .end();
-}
-void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)  {
-    int w, h;
-    SDL_GetWindowSize(window, &w, &h);
+    // embedded shader (内嵌最简单 shader)
+    const char* vs_embedded =
+        "void main() { gl_Position = vec4(a_position, 1.0); v_color0 = a_color0; }";
+    const char* fs_embedded =
+        "void main() { gl_FragColor = v_color0; }";
+    bgfx::ShaderHandle vs = loadShader("vs_cubes.bin");
+    bgfx::ShaderHandle fs = loadShader("fs_cubes.bin");
+    BX_ASSERT(bgfx::isValid(vs), "Vertex shader load failed");
+    BX_ASSERT(bgfx::isValid(fs), "Fragment shader load failed");
+
+    defaultProgram = bgfx::createProgram(vs, fs, true); // 自动销毁 shader
+    BX_ASSERT(bgfx::isValid(defaultProgram), "Program create failed");
+
     bgfx::reset(800, 600, BGFX_RESET_VSYNC);
+}
+
+void RenderSystem :: update(EntityManager& em, EventBus& ev) {
+    int w, h;
+    SDL_GetWindowSize(this->window, &w, &h);
+    
     bgfx::setViewClear( // 清屏
         0,
         BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
@@ -109,7 +208,7 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
         0
     );
     bgfx::setViewRect(0, 0, 0, 800, 600);
-    
+
     Entity camEntity = 0;
     Position* camPos = nullptr;
     Camera* cam = nullptr;
@@ -119,7 +218,11 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
         camEntity = e;
         break; // 只取一个camera
     }
-    if (!cam || !camPos) return;
+    if (!cam || !camPos){
+        bgfx::touch(0);
+        bgfx::frame();
+        return;
+    }
     // 用 yaw / pitch 计算方向
     float yawRad   = cam->yaw   * M_PI / 180.f;
     float pitchRad = cam->pitch * M_PI / 180.f;
@@ -151,6 +254,8 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
                 bgfx::getCaps()->homogeneousDepth);
     float viewProj[16];
     bx::mtxMul(viewProj, proj, view); 
+    bgfx::setViewTransform(0, view, proj);
+
     drawCrosshair(w, h, 10.0f, 2.0f);
 
     for (Entity e : em.view<Position>()) {
@@ -160,7 +265,7 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
         auto* s = em.get<Size>(e);
         auto* coll = em.get<Collider>(e);
         if (!pos || !s || !coll) continue;
-        drawCube(pos->position.x, pos->position.y, pos->position.z, s->value.x, viewProj);
+        drawCube(pos->position.x, pos->position.y, pos->position.z, s->value.x);
         
         // 构造方块 AABB
         // AABB box = coll->box; // 如果 coll->box 是世界坐标就直接用
@@ -168,6 +273,7 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
         //     (float)w/h, 0.1f, 100.f, box))
         //     continue; // 剔除不可见
     }
+    bgfx::touch(0);
     // 在 bgfx 里，每个渲染操作都绑定到一个 view，viewId = 0 通常是默认主视图
     //bgfx::touch(0); 
     // / 告诉 bgfx：“这个视图（view）这帧依然有效”，“即使我没往里面提交任何 draw call，
@@ -175,7 +281,6 @@ void RenderSystem :: update(EntityManager& em, EventBus& ev, SDL_Window* window)
     // 如果你每帧都提交 draw call，通常不必 touch。touch 主要用于空 view 也要清理的情况
     bgfx::frame();
 }
-
 
 bool RenderSystem::isAABBVisible(const Vec3& camPos, const Vec3& camFront, const Vec3& camUp,
                    float fov, float aspect, float nearDist, float farDist, const AABB& box) {
@@ -222,6 +327,7 @@ bool RenderSystem::isAABBVisible(const Vec3& camPos, const Vec3& camFront, const
     }
     return inside;
 }
-RenderSystem::~RenderSystem(){
-    
+
+RenderSystem::~RenderSystem() {
+    bgfx::destroy(defaultProgram);
 }

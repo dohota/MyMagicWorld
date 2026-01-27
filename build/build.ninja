@@ -59,106 +59,6 @@ build CMakeFiles/MyWorld.dir/src/main.cpp.o: CXX_COMPILER__MyWorld_unscanned_Deb
   OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src
   TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
 
-build CMakeFiles/MyWorld.dir/src/world/world.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/world/world.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/world/world.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/world
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/system/input.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/system/input.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/system/input.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/system
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/system/manager.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/system/manager.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/system/manager.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/system
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/system/raycast.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/system/raycast.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/system/raycast.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/system
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/system/render.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/system/render.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/system/render.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/system
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/system/collision.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/system/collision.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/system/collision.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/system
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/system/entity.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/system/entity.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/system/entity.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/system
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/component/manager.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/component/manager.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/component/manager.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/component
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/entity/manager.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/entity/manager.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/entity/manager.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/entity
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
-build CMakeFiles/MyWorld.dir/src/world/manager.cpp.o: CXX_COMPILER__MyWorld_unscanned_Debug /Users/karl/Documents/programming/c/FirstWorld/src/world/manager.cpp || cmake_object_order_depends_target_MyWorld
-  CONFIG = Debug
-  DEFINES = -DBX_CONFIG_DEBUG=1
-  DEP_FILE = CMakeFiles/MyWorld.dir/src/world/manager.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64
-  INCLUDES = -I/Users/karl/vcpkg/packages/bgfx_arm64-osx/include -I/opt/homebrew/Cellar/sdl2/2.32.10/include -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
-  OBJECT_DIR = CMakeFiles/MyWorld.dir
-  OBJECT_FILE_DIR = CMakeFiles/MyWorld.dir/src/world
-  TARGET_SUPPORT_DIR = CMakeFiles/MyWorld.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target MyWorld
@@ -167,7 +67,7 @@ build CMakeFiles/MyWorld.dir/src/world/manager.cpp.o: CXX_COMPILER__MyWorld_unsc
 #############################################
 # Link the executable MyWorld
 
-build MyWorld: CXX_EXECUTABLE_LINKER__MyWorld_Debug CMakeFiles/MyWorld.dir/src/main.cpp.o CMakeFiles/MyWorld.dir/src/world/world.cpp.o CMakeFiles/MyWorld.dir/src/system/input.cpp.o CMakeFiles/MyWorld.dir/src/system/manager.cpp.o CMakeFiles/MyWorld.dir/src/system/raycast.cpp.o CMakeFiles/MyWorld.dir/src/system/render.cpp.o CMakeFiles/MyWorld.dir/src/system/collision.cpp.o CMakeFiles/MyWorld.dir/src/system/entity.cpp.o CMakeFiles/MyWorld.dir/src/component/manager.cpp.o CMakeFiles/MyWorld.dir/src/entity/manager.cpp.o CMakeFiles/MyWorld.dir/src/world/manager.cpp.o | /Users/karl/vcpkg/packages/bgfx_arm64-osx/lib/libbgfx.a /Users/karl/vcpkg/packages/bgfx_arm64-osx/lib/libbx.a /Users/karl/vcpkg/packages/bgfx_arm64-osx/lib/libbimg.a /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2main.a
+build MyWorld: CXX_EXECUTABLE_LINKER__MyWorld_Debug CMakeFiles/MyWorld.dir/src/main.cpp.o | /Users/karl/vcpkg/packages/bgfx_arm64-osx/lib/libbgfx.a /Users/karl/vcpkg/packages/bgfx_arm64-osx/lib/libbx.a /Users/karl/vcpkg/packages/bgfx_arm64-osx/lib/libbimg.a /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2main.a
   CONFIG = Debug
   FLAGS = -g -arch arm64
   LINK_FLAGS = -Wl,-search_paths_first -Wl,-headerpad_max_install_names
@@ -224,14 +124,14 @@ build all: phony MyWorld
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja /Users/karl/Documents/programming/c/FirstWorld/build/cmake_install.cmake: RERUN_CMAKE | /Users/karl/Documents/programming/c/FirstWorld/CMakeLists.txt /opt/homebrew/lib/cmake/SDL2/sdl2-config-version.cmake /opt/homebrew/lib/cmake/SDL2/sdl2-config.cmake /opt/homebrew/share/cmake/Modules/CMakeCXXInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /opt/homebrew/share/cmake/Modules/CMakeGenericSystem.cmake /opt/homebrew/share/cmake/Modules/CMakeInitializeConfigs.cmake /opt/homebrew/share/cmake/Modules/CMakeLanguageInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /opt/homebrew/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /opt/homebrew/share/cmake/Modules/Compiler/Clang.cmake /opt/homebrew/share/cmake/Modules/Compiler/GNU.cmake /opt/homebrew/share/cmake/Modules/FeatureSummary.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin-Initialize.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.2/CMakeCXXCompiler.cmake CMakeFiles/4.2.2/CMakeSystem.cmake
+build build.ninja /Users/karl/Documents/programming/c/FirstWorld/build/cmake_install.cmake: RERUN_CMAKE | /Users/karl/Documents/programming/c/FirstWorld/CMakeLists.txt /opt/homebrew/lib/cmake/SDL2/sdl2-config-version.cmake /opt/homebrew/lib/cmake/SDL2/sdl2-config.cmake /opt/homebrew/share/cmake/Modules/CMakeCXXInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /opt/homebrew/share/cmake/Modules/CMakeGenericSystem.cmake /opt/homebrew/share/cmake/Modules/CMakeInitializeConfigs.cmake /opt/homebrew/share/cmake/Modules/CMakeLanguageInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeOBJCXXInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /opt/homebrew/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/AppleClang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /opt/homebrew/share/cmake/Modules/Compiler/Clang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/Clang.cmake /opt/homebrew/share/cmake/Modules/Compiler/GNU.cmake /opt/homebrew/share/cmake/Modules/FeatureSummary.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeOBJCXXLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang-C.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-AppleClang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin-Initialize.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang-C.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.2/CMakeCXXCompiler.cmake CMakeFiles/4.2.2/CMakeOBJCXXCompiler.cmake CMakeFiles/4.2.2/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /Users/karl/Documents/programming/c/FirstWorld/CMakeLists.txt /opt/homebrew/lib/cmake/SDL2/sdl2-config-version.cmake /opt/homebrew/lib/cmake/SDL2/sdl2-config.cmake /opt/homebrew/share/cmake/Modules/CMakeCXXInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /opt/homebrew/share/cmake/Modules/CMakeGenericSystem.cmake /opt/homebrew/share/cmake/Modules/CMakeInitializeConfigs.cmake /opt/homebrew/share/cmake/Modules/CMakeLanguageInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /opt/homebrew/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /opt/homebrew/share/cmake/Modules/Compiler/Clang.cmake /opt/homebrew/share/cmake/Modules/Compiler/GNU.cmake /opt/homebrew/share/cmake/Modules/FeatureSummary.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin-Initialize.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.2/CMakeCXXCompiler.cmake CMakeFiles/4.2.2/CMakeSystem.cmake: phony
+build /Users/karl/Documents/programming/c/FirstWorld/CMakeLists.txt /opt/homebrew/lib/cmake/SDL2/sdl2-config-version.cmake /opt/homebrew/lib/cmake/SDL2/sdl2-config.cmake /opt/homebrew/share/cmake/Modules/CMakeCXXInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /opt/homebrew/share/cmake/Modules/CMakeGenericSystem.cmake /opt/homebrew/share/cmake/Modules/CMakeInitializeConfigs.cmake /opt/homebrew/share/cmake/Modules/CMakeLanguageInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeOBJCXXInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /opt/homebrew/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /opt/homebrew/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/AppleClang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /opt/homebrew/share/cmake/Modules/Compiler/Clang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Compiler/Clang.cmake /opt/homebrew/share/cmake/Modules/Compiler/GNU.cmake /opt/homebrew/share/cmake/Modules/FeatureSummary.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Internal/CMakeOBJCXXLinkerInformation.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang-C.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Linker/AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-AppleClang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang-OBJCXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Apple-Clang.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin-Initialize.cmake /opt/homebrew/share/cmake/Modules/Platform/Darwin.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang-C.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang-CXX.cmake /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang.cmake /opt/homebrew/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.2/CMakeCXXCompiler.cmake CMakeFiles/4.2.2/CMakeOBJCXXCompiler.cmake CMakeFiles/4.2.2/CMakeSystem.cmake: phony
 
 
 #############################################

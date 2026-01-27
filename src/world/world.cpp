@@ -1,44 +1,41 @@
 #include "world.h"
 World :: World() {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) { // 初始化 SDL
-        //std::cerr  << "SDL_Init error: "  << SDL_GetError() << "\n";
-        return; //错误，退出程序
-    }
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) return; // 初始化 SDL
+    
+#if defined(__APPLE__)
     this->window = SDL_CreateWindow(
         "my magic world",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         800, 600,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP//全屏标志
-    );
-    SDL_SysWMinfo wmi;
-    SDL_VERSION(&wmi.version);
-    SDL_GetWindowWMInfo(this->window, &wmi);
+        SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_METAL 
+        //SDL_WINDOW_FULLSCREEN_DESKTOP // 全屏标志
+    ); 
+    // 在apple上要用 SDL_WINDOW_METAL
+#else
+    this->window = SDL_CreateWindow(
+        "my magic world",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        800, 600,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP
+    ); 
+#endif
 
-    bgfx::Init init;
-    init.type = bgfx::RendererType::Count; // 让 bgfx 自己选
-    init.resolution.width  = 800;
-    init.resolution.height = 600;
-    init.resolution.reset  = BGFX_RESET_VSYNC;
-    // macOS / Windows / Linux 不同
-    init.platformData.nwh =
-    #if defined(_WIN32)
-        wmi.info.win.window;
-    #elif defined(__APPLE__)
-        wmi.info.cocoa.window;
-    #else
-        (void*)wmi.info.x11.window;
-    #endif
-    bgfx::init(init);
-
-    this->running = true;
-    SDL_SetRelativeMouseMode(SDL_TRUE);//防止鼠标没反应
-    SDL_ShowCursor(SDL_DISABLE);
-    this->em = new EntityManager();
-    this->s = new SystemManager();
-    this->ev = new EventBus();
-    this->cv = new CommandBuffer();
+    if (!this->window) {
+        SDL_Log("SDL_CreateWindow failed: %s", SDL_GetError());
+        return;
+    }else {
+        this->running = true;
+        SDL_SetRelativeMouseMode(SDL_TRUE);//防止鼠标没反应
+        SDL_ShowCursor(SDL_DISABLE);
+        this->em = new EntityManager();
+        this->s = new SystemManager(this->window);
+        this->ev = new EventBus();
+        this->cv = new CommandBuffer();
+    }
 }
+
 void World :: start()  {
     this->em->build("player",{0,0,0});
     this->em->build("grass_chunk",{0,0,0});
@@ -57,10 +54,10 @@ void World :: start()  {
             //     setupProjection(e.window.data1, e.window.data2);
             // }
         }
-        this->s->update(*(this->em), *(this->cv), *(this->ev), dt, this->window);
-        SDL_PollEvent(&e);
+        this->s->update(*(this->em), *(this->cv), *(this->ev), dt);
     }
 }
+
 World::~World(){
     bgfx::shutdown();
     delete this->s;

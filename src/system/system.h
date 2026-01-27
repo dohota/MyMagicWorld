@@ -3,11 +3,19 @@
 #include "../entity/entity.h"
 #include "../component/component.h"
 #include <functional>
-#include <bgfx/bgfx.h>
+
+#include <bgfx/bgfx.h> // bgfx渲染API核心接口
 #include <bgfx/platform.h>
 #include <bx/bx.h>
-#include <bx/math.h>
+#include <bx/math.h> // bx数学工具（纹理尺寸计算等可能用到）
 #include <SDL2/SDL_syswm.h>
+
+// #include <bx/endian.h>            // bx字节序处理（纹理数据可能涉及跨平台字节序）              
+// #include <bx/readerwriter.h>      // bx文件读写接口（FileReaderI等）
+// #include <bx/string.h>            // bx字符串处理（文件路径操作等）
+// #include <bx/debug.h>             // bx调试工具（打印错误信息等）
+// #include <bimg/decode.h>             // bimg图像解码接口（解析纹理数据）
+// #include <bx/allocator.h>         // bx内存分配器（管理纹理数据内存）
 
 // 目前事件总线是即时派发的，不是队列式的
 // 如果之后需要，可以再写一个队列式的事件总线
@@ -140,12 +148,14 @@ public:
 class RenderSystem  {
 public:
     int prior = 4;
-    RenderSystem(); //默认构造函数
+    RenderSystem(SDL_Window* window); //默认构造函数
     void start();
-    void update(EntityManager& em, EventBus& ev, SDL_Window* window);
+    void update(EntityManager& em, EventBus& ev);
     ~RenderSystem();
 private:
-    void drawCube(float x, float y, float z, float s, const float viewProj[16]);
+    SDL_Window* window;
+    bgfx::ProgramHandle defaultProgram;
+    void drawCube(float x, float y, float z, float s);
     void drawCrosshair(int screenWidth, int screenHeight, float size = 10.0f, float thickness = 1.0f); // 十字准星
     bool isAABBVisible(const Vec3& camPos, const Vec3& camFront, const Vec3& camUp,
                    float fov, float aspect, float nearDist, float farDist, const AABB& box);
@@ -154,9 +164,9 @@ private:
 
 class SystemManager  {
 public:
-    SystemManager(); //默认构造函数
+    SystemManager(SDL_Window* window); //默认构造函数
     void start();
-    void update(EntityManager& em,CommandBuffer& cv, EventBus& ev, float dt,SDL_Window* window);
+    void update(EntityManager& em,CommandBuffer& cv, EventBus& ev, float dt);
     ~SystemManager();
 private:
     InputSystem*    s1 = nullptr;

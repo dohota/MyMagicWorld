@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(MyWorld LANGUAGES CXX)
+project(MyWorld LANGUAGES CXX OBJCXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,16 +8,16 @@ find_package(SDL2 CONFIG REQUIRED)
 
 add_executable(MyWorld
     src/main.cpp
-    src/world/world.cpp
-    src/system/input.cpp
-    src/system/manager.cpp
-    src/system/raycast.cpp
-    src/system/render.cpp
-    src/system/collision.cpp
-    src/system/entity.cpp
-    src/component/manager.cpp
-    src/entity/manager.cpp
-    src/world/manager.cpp
+    # src/world/world.cpp
+    # src/system/input.cpp
+    # src/system/manager.cpp
+    # src/system/raycast.cpp
+    # src/system/render.cpp
+    # src/system/collision.cpp
+    # src/system/entity.cpp
+    # src/component/manager.cpp
+    # src/entity/manager.cpp
+    # src/world/manager.cpp
 )
 
 # 使用 vcpkg toolchain 后，这一行能找到 bgfx
@@ -77,3 +77,8 @@ endif()
 # 不指定编译器（macOS 自动用 clang）
 # Ninja 会被 CMake Tools 自动选
 # CMake 有时还在用旧的 configure 缓存，则ctrl+shift+p：CMake: Delete Cache and Reconfigure 清除缓存
+
+# .mm 文件 clang 和 CMake 都能正常识别
+# clang：看到 .mm → 自动当 Objective-C++
+# CMake：只要你把 .mm 放进 add_executable，它就会：用 C++ 编译规则 但语言是 OBJCXX（Objective-C++）
+# 不需要额外告诉 clang 或 CMake “这是 Objective-C++”
