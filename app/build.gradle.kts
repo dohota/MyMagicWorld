@@ -24,10 +24,10 @@ dependencies {
 
     implementation("org.lwjgl:lwjgl:$lwjglVersion")
     implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
-    implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")
+    implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
     runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:natives-macos-arm64")//m芯片的mac
     runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-macos-arm64")
-    runtimeOnly("org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-macos-arm64")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos-arm64")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
